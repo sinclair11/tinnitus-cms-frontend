@@ -1,0 +1,24 @@
+@use '../../styles/colors'
+@use '../../styles/custom'
+
+.section-album
+    display: flex
+    flex-direction: column
+    width: calc(100% - 300px - 80px)
+    padding: 20px 40px 20px 40px
+    margin-left: 320px
+    overflow: auto
+    font-family: sans-serif
+
+.section-album-artwork
+    width: 400px
+    height: 400px
+    background: colors.$albumArtwork
+
+    img
+        width: 400px
+        height: 400px
+
+.section-album-content
+    width: 100%
+    display: flex

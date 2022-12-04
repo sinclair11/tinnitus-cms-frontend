@@ -1,0 +1,81 @@
+@use '../../styles/colors'
+
+.sidebar
+    position: fixed
+    display: flex
+    flex-direction: column
+    background: linear-gradient(130deg, rgba(10,35,81,1) 50%, rgba(0,125,150,0.9430365896358543) 100%)
+    height: calc(100% - 20px)
+    width: 300px
+    padding: 10px
+
+.sidebar-navigate
+    display: flex
+    align-items: center
+    margin-bottom: 10px
+    width: 100%
+
+    img
+        width: 26px
+        height: 26px
+        margin-right: 5px
+        cursor: pointer
+        opacity: 0.5
+
+        &:hover
+            opacity: 1
+
+.sidebar-logo
+    width: 100%
+    display: flex
+
+    img
+        width: 158px
+        height: 128px
+
+    p
+        margin-top: 80px
+        font-size: 14px
+
+.sidebar-menu-content
+    display: flex
+    flex-direction: column
+    padding: 20px
+    width: 90%
+    color: colors.$menuItem
+    max-height: calc(100% - 250px)
+    overflow: auto
+
+.sidebar-menu-item
+    display: flex
+    width: 100%
+    align-items: center
+    cursor: pointer
+    margin-bottom: 10px
+
+    p
+        margin-left: 10px
+
+    img
+        width: 32px
+        height: 32px
+
+.sidebar-submenu
+    display: none
+    // transition: height 1.5s ease
+
+    ul
+        margin-top: 0px
+        margin-bottom: 0px
+        p
+            margin-bottom: 26px
+            cursor: pointer
+
+            &:hover
+                opacity: 0.5
+
+.sidebar-copyright
+    position: fixed
+    margin: 0px
+    bottom: 10px
+    left: 30px

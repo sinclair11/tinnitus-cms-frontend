@@ -1,0 +1,45 @@
+@use '../../styles/custom'
+@use '../../styles/colors'
+
+.PageLogin
+  @include custom.pageSize()
+  display: flex
+  flex-direction: column
+  align-items: center
+  background: colors.$background
+
+.LoginForm
+  @include custom.flexCenter($direction: column)
+
+.LoginInput
+  width: 230px
+  height: 25px
+  overflow: auto
+  margin-top: 10px
+  border: 1px solid colors.$background
+  font-size: 14px
+  transition: box-shadow 0.2s ease-in
+  color: black
+  border-radius: 3px
+  padding-left: 6px
+
+.LogoLogin
+  width: 330px
+  height: 256px
+  margin-top: 50px
+  margin-bottom: 80px
+  margin-left: 20px
+
+.LoginBtn
+  @include custom.btnStyle($width: 100px, $height: 40px, $prop: margin-top, $val:15px)
+  border: 1px solid colors.$btn
+
+  &:hover  
+    transition: box-shadow 0.2s ease-in
+
+.InvalidRed
+  font-size: 14px
+  color: red
+  padding: 0px
+  margin: 0px
+  font-weight: 500
