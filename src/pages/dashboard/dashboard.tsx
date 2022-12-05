@@ -11,7 +11,6 @@ import { Card } from 'react-bootstrap';
 import { PieChart } from 'react-minimal-pie-chart';
 import { useLoading } from '@pages/loading/loading';
 import MostRatedView from '@components/mostratedview/mostratedview';
-import { Icons } from '@utils/icons';
 
 const Dashboard: React.FC = () => {
     const navigate = useNavigate();
@@ -68,17 +67,19 @@ const Dashboard: React.FC = () => {
                         <h3 className="dashboard-header">General</h3>
                         <div className="dashboard-cards">
                             <Card className="card">
-                                <Card.Body className="card-body">
-                                    <Card.Title style={{ fontSize: '20px' }}>Resources</Card.Title>
+                                {/* <Card.Img variant="top" src={Icons.AudioIcon} /> */}
+                                {/* <Card.Body className="card-body">
+                                    <Card.Title style={{ fontSize: '20px', color: '#00ffff' }}>Resources</Card.Title>
                                     <Card.Text>Albums: 100</Card.Text>
                                     <Card.Text>Songs: 100</Card.Text>
                                     <Card.Text>Samples: 100</Card.Text>
                                     <Card.Text>Presets: 100</Card.Text>
-                                </Card.Body>
+                                </Card.Body> */}
                             </Card>
                             <Card className="card" style={{ marginLeft: '20px' }}>
+                                {/* <Card.Img variant="top" src={Icons.AudioIcon} /> */}
                                 <Card.Body className="card-body">
-                                    <Card.Title style={{ fontSize: '20px' }}>Categories</Card.Title>
+                                    <Card.Title style={{ fontSize: '20px', color: '#00ffff' }}>Categories</Card.Title>
                                     <Card.Text>Albums: 100</Card.Text>
                                     <Card.Text>Samples: 100</Card.Text>
                                     <Card.Text>Presets: 100</Card.Text>
@@ -93,7 +94,7 @@ const Dashboard: React.FC = () => {
                                     {
                                         title: 'AppStore',
                                         value: appStoreSales,
-                                        color: '#c5c5c7',
+                                        color: '#F5F5F7',
                                         key: '100',
                                     },
                                     {
@@ -225,7 +226,7 @@ const UsersTable: React.FC<UsersTableProps> = (props: UsersTableProps) => {
                 {props.rows.map((row) => (
                     <tr>
                         <td>{row.key}</td>
-                        <td style={{ color: 'white', background: '#132257' }}>{row.value}</td>
+                        <td style={{ color: '#00ffff' }}>{row.value}</td>
                         <td className="desc-td">{row.desc}</td>
                     </tr>
                 ))}

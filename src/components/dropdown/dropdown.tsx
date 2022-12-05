@@ -21,6 +21,7 @@ const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
     function onDropdownClick(): void {
         if (toggle === true) {
             list.current.style.height = '200px';
+            list.current.style.border = '1px solid aquamarine';
             list.current.style.overflowY = 'auto';
         } else {
             list.current.style.height = '0px';

@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { doc, getDoc } from 'firebase/firestore';
 import { getStorage, ref, getBlob } from 'firebase/storage';
 import { useLoading } from '@pages/loading/loading';
+import { invoke } from '@tauri-apps/api/tauri';
 import { dialog } from '@tauri-apps/api';
 import { getAlbums } from '@services/album-services';
 import { getSamples } from '@services/sample-services';
@@ -51,6 +52,7 @@ const Login: React.FC = () => {
                     payload: getAuth().currentUser!.uid,
                 });
                 appendLoading();
+                await fetchConfig();
                 await fetchCategories();
                 await fetchAlbums();
                 await fetchSamples();
@@ -67,6 +69,41 @@ const Login: React.FC = () => {
             }
         } else {
             /*Do nothing*/
+        }
+    }
+
+    async function fetchConfig(): Promise<void> {
+        try {
+            //Retrieve oci configuration from database
+            let docSnap = await getDoc(doc(db, 'misc', 'config'));
+            const ociConfig = docSnap.data()!;
+            //Fetch key file
+            const storage = getStorage();
+            const keyRef = ref(storage, 'oci_api_key.pem');
+            const keyFile = await getBlob(keyRef);
+            docSnap = await getDoc(doc(db, 'misc', 'admin'));
+            //OCI services are handled by backend
+            // const result = (await invoke('set_oci_credentials', {
+            //     user: ociConfig.oci_id,
+            //     tenancy: ociConfig.oci_tenancy,
+            //     fingerprint: ociConfig.oci_fingerprint,
+            //     namespace: ociConfig.oci_namespace,
+            //     preauthreq: docSnap.data()!.preauthreq,
+            //     key: await keyFile.text(),
+            //     keyId: `${ociConfig.oci_tenancy}/${ociConfig.oci_id}/${ociConfig.oci_fingerprint}`,
+            // })) as string;
+            // if (result !== 'OK') {
+            //     throw new Error(result);
+            // }
+            //Store prerequested config in redux
+            dispatch({
+                type: 'oci/config',
+                payload: {
+                    prereq: ociConfig.oci_prereq,
+                },
+            });
+        } catch (error) {
+            throw error;
         }
     }
 
@@ -116,10 +153,17 @@ const Login: React.FC = () => {
         });
     }
 
+    async function fetchUserInfoAndActivity(): Promise<void> {
+        return;
+    }
+
+    async function fetchSalesData(): Promise<void> {
+        return;
+    }
+
     return (
         <div className="PageLogin">
             <img src={logo} className="LogoLogin" />
-            <h2>Login Tinnitus CMS</h2>
             <Form noValidate className="LoginForm">
                 <div className="InputSection" style={{ height: '55px' }}>
                     <InputGroup className="InputGroupPath" hasValidation>

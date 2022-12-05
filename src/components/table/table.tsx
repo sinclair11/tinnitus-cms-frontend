@@ -6,6 +6,7 @@ import ReactTooltip from 'react-tooltip';
 import { getDurationFormat } from '@utils/helpers';
 import { CombinedStates } from '@store/reducers/custom';
 import { useSelector } from 'react-redux';
+import { invoke } from '@tauri-apps/api';
 import { Category } from '@src/types/general';
 
 type TableProps = {

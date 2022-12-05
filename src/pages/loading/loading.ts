@@ -48,7 +48,7 @@ export function useLoading() {
         -webkit-box-align: center;
         -ms-flex-align: center;
         align-items: center;
-        background: #ebebeb;
+        background: #ffffff;
         z-index: 99999999;
       }
       

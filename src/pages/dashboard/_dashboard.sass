@@ -2,7 +2,7 @@
 @use '../../styles/custom'
 
 .dashboard-header
-    background: #efbefef
+    background: #efefef
     color: black
     padding: 5px
     border-radius: 10px
@@ -12,21 +12,18 @@
     width: 70%
     color: black
     margin-bottom: 30px
-    background: white
-    padding: 20px
-    border-radius: 10px
-    width: calc( 100% - 40px )
-    box-shadow: custom.$boxshadow
 
     .card
         width: 500px
-        background: #ebebeb
-        color: black
+        background: #ECF0F3
+        color: white
+        // border: 1px solid black
         border-radius: 10px
-        box-shadow: custom.$boxshadow
+        box-shadow: inset 18px 18px 30px 1px #D1D9E6,inset -18px -18px 30px 1px #FFF
 
         .card-body
             padding: 20px
+            // background: #ECF0F3
 
     img
         width: 300px
@@ -48,17 +45,13 @@
     display: flex
     padding: 20px
     align-items: center
-    width: calc( 100% - 40px )
+    width: 96%
     min-height: 250px
     border-radius: 10px
-    background: white
+    background: colors.$card
     box-shadow: custom.$boxshadow
     overflow-y: auto
     margin-bottom: 30px
-    overflow-y: hidden
-
-    .dashboard-cards
-        box-shadow: none
 
     .sales-pie
         background: colors.$card
@@ -70,55 +63,55 @@
     .sales-apple-card
         width: 300px !important
         margin-left: 80px
+        // background: #ECF0F3 !important
         border: none
         color: black !important
-        border-radius: 10px !important
+        border-radius: 52px !important
         background: #e0e0e0 !important
-        box-shadow: custom.$boxshadow !important
+        box-shadow: inset 12px 12px 30px 5px #aaaaaa, inset -19px -19px 30px 1px #ffffff !important
 
     .sales-android-card
         width: 300px !important
         margin-left: 20px
         margin-right: 20px
         background: #48FF48 !important
-        box-shadow: custom.$boxshadow !important
+        box-shadow: none !important
         border: none
         color: black !important
 
 .dashboard-usr-div
-    width: calc( 100% - 40px )
+    width: 100%
     display: flex
     margin-bottom: 30px
-    padding: 20px
-    background: white
-    border-radius: 10px
-    box-shadow: custom.$boxshadow
 
 .dasboard-users
     display: flex
     padding: 10px
     width: 47%
+    border-radius: 10px
+    background: colors.$card
+    box-shadow: custom.$boxshadow
 
 .dashboard-user-table
     width: 100%
-
     th
-        font-size: 17px
+        font-size: 18px
         font-weight: 600
-        background: colors.$secondaryBlue
-        padding: 10px
-        border-radius: 5px
 
     td
         padding: 10px
+        border: 1px solid colors.$border
         border-radius: 5px
-        background: colors.$secondaryBlue
+        background: colors.$card
+        color: white
         text-align: center
         font-size: 16px
 
     tr
+        border: 1px solid black
         border-radius: 5px
-        background: colors.$secondaryBlue
+        background: colors.$card
+        color: white
         text-align: center
         margin: 0
 
@@ -130,12 +123,15 @@
     padding: 10px
     width: 47%
     border-radius: 10px
-    background: white
+    background: colors.$card
+    box-shadow: custom.$boxshadow
     margin-left: 20px
 
 .dashboard-most-rated
     display: flex
     align-items: center
     justify-content: center
-    width: 100%
+    width: 97%
     border-radius: 10px
+    background: colors.$card
+    box-shadow: custom.$boxshadow

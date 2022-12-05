@@ -16,11 +16,12 @@
     padding: 7px
     width: calc( 100% - 16px )
     background: colors.$player
+    box-shadow: custom.$player-shadow
 
 .time-duration
     display: flex
     align-items: center
-    color: white
+    color: colors.$playerItem
     margin-left: 10px
 
     p
@@ -51,7 +52,7 @@
     margin-left: 5px
     cursor: pointer
     padding: 0px
-    background-color: white
+    background-color: colors.$playerItem
 
     img
         width: 16px
@@ -68,18 +69,17 @@
 
     .slider
         height: .5em
-        background-color: colors.$btn
+        background-color: colors.$playerItem
         border-radius: 5px
 
     .thumb
         border-radius: 50%
         width: 16px
         height: 16px
-        background-color: colors.$btn
-        margin-left: -5px
+        background-color: colors.$playerItem
 
         &:hover
-            background-color: colors.$btn
+            background-color: #00baba
             cursor: pointer
 
 .player-btn-bounce

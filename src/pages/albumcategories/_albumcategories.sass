@@ -23,16 +23,15 @@
     .table
         width: 100%
         color: white
-        background: colors.$primaryBlue
+        background: colors.$table
         border-spacing: 0
-        border: 1px solid white
+        border: 1px solid colors.$border
         margin-top: 50px
-        border-radius: 5px
 
         td, th
             margin: 0
             padding: 10px
-            border: 1px solid white
+            border: 1px solid colors.$border
             border-left: 0
             border-bottom: none
 
@@ -59,7 +58,7 @@
                 height: 28px
                 cursor: pointer
                 border-radius: 6px
-                border: 1px solid white
+                border: 1px solid colors.$border
 
 .color-picker-table
     z-index: -5
@@ -88,10 +87,9 @@
     flex-direction: column
     width: 50%
     padding: 10px
+    border: 1px solid colors.$border
     border-radius: 6px
     margin-top: 7px
-    background: #ebebeb
-    color: black
 
     .input-group
         display: flex
@@ -101,6 +99,7 @@
 
         .label
             font-size: 13px
+            color: white
 
         .input
             width: 95%
@@ -108,6 +107,7 @@
             font-size: 15px
             margin-top: 10px
             border: none
+            border: 1px solid colors.$border
             transition: box-shadow 0.2s ease-in
             margin-left: 0px
 
@@ -154,11 +154,13 @@
     margin-left: 20px
     cursor: pointer
     border-radius: 50%
+    -webkit-box-shadow: 0px 1px 10px 5px rgba(0,255,255,0.25)
+    box-shadow: 0px 1px 10px 5px rgba(0,255,255,0.25)
     transition: box-shadow 0.2s ease-in
-    border: 1px solid #cccccc
 
     &:hover
-        box-shadow: 0px 1px 15px 5px rgba(25, 105, 225, 1)
+        -webkit-box-shadow: 0px 1px 16px 5px rgba(0,255,255,0.6)
+        box-shadow: 0px 1px 16px 5px rgba(0,255,255,0.6)
 
 .category-add-btn
     display: flex

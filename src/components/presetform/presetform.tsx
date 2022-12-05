@@ -7,6 +7,7 @@ import { db } from '@config/firebase';
 import { query, collection, where, getDocs, doc } from 'firebase/firestore';
 import { InputGroup, FormControl } from 'react-bootstrap';
 import Dropdown from '@components/dropdown/dropdown';
+import { dialog, invoke } from '@tauri-apps/api';
 import Artwork from '@components/artwork/artwork';
 import { CombinedStates } from '@store/reducers/custom';
 import { deletePreset, editPresetData, uploadPresetInfo } from '@services/preset-services';
@@ -136,7 +137,15 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
     }
 
     async function onBrowseClick(): Promise<void> {
-        return;
+        const dialog = (await invoke('get_audio_files')) as any;
+        if (dialog[0] !== undefined) {
+            const presetData = dialog[1][0];
+            file.current = presetData.file;
+            setName(presetData.name);
+            setLength(getDurationFormat(presetData.duration));
+            setNameInvalid('');
+            setFileInvalid('');
+        }
     }
 
     function onUploadSaveClick(): void {

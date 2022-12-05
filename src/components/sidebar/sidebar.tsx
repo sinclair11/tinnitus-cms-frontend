@@ -88,7 +88,11 @@ const Sidebar: React.FC = () => {
                     target="_blank"
                 >
                     <img src={Icons.ChannelIcon} />
-                    <p style={{ color: 'white' }}>YouTube channel</p>
+                    <p style={{ color: '#00ffff' }}>YouTube channel</p>
+                </a>
+                <a className="sidebar-menu-item" href="https://www.earsbuzzing.com" target="_blank">
+                    <img src={Icons.EarsbuzzingSite} />
+                    <p style={{ color: '#00ffff' }}>Ears Buzzing site</p>
                 </a>
             </div>
             <p className="sidebar-copyright">Copyright © 2022 Tinnitus Sounds</p>

@@ -8,6 +8,7 @@ import { categoryStyles } from '@src/styles/styles';
 import { InputGroup, FormControl } from 'react-bootstrap';
 import { SketchPicker } from 'react-color';
 import { v4 as uuid } from 'uuid';
+import { dialog, invoke } from '@tauri-apps/api';
 import { addCategory, editCategory, deleteCategory } from '@services/general-services';
 import Artwork from '@components/artwork/artwork';
 import { Category } from '@src/types/general';
