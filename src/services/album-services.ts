@@ -76,13 +76,6 @@ export async function deleteAlbum(id: string): Promise<{ result: boolean; messag
         await updateDoc(doc(db, 'misc', 'albums'), {
             deleted_albums: arrayUnion(id),
         });
-        //! Does not work with pre-authenticated requests
-        // const res = (await invoke('delete_album', { album: album.id, files: album.files })) as any;
-        // if (res[0] === false) {
-        //     throw new Error(res[1]);
-        // } else {
-        //     return { result: true, message: 'Album deleted' };
-        // }
         return { result: true, message: 'Album deleted' };
     } catch (error) {
         throw error;

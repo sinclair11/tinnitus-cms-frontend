@@ -50,7 +50,7 @@ const MostRatedView: React.FC = () => {
                     <tbody>
                         <tr>
                             <td>1</td>
-                            <td style={{ color: '#00ffff' }}>Album test 1</td>
+                            <td style={{ background: '#132257' }}>Album test 1</td>
                             <td>100000</td>
                         </tr>
                     </tbody>
