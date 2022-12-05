@@ -3,8 +3,8 @@
 .sidebar
     position: fixed
     display: flex
-    flex-direction: column
-    background: linear-gradient(130deg, rgba(10,35,81,1) 50%, rgba(0,125,150,0.9430365896358543) 100%)
+    flex-direction: column 
+    background: colors.$sidebar
     height: calc(100% - 20px)
     width: 300px
     padding: 10px
@@ -42,7 +42,7 @@
     flex-direction: column
     padding: 20px
     width: 90%
-    color: colors.$menuItem
+    color: white
     max-height: calc(100% - 250px)
     overflow: auto
 
@@ -62,7 +62,6 @@
 
 .sidebar-submenu
     display: none
-    // transition: height 1.5s ease
 
     ul
         margin-top: 0px
