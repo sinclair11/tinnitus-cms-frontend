@@ -1,6 +1,5 @@
 import { Icons } from '@src/utils/icons';
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
-import { invoke } from '@tauri-apps/api/tauri';
 
 type ArtworkProps = {
     type: string;
@@ -36,12 +35,7 @@ const Artwork = forwardRef((props: ArtworkProps, ref: any) => {
     }));
 
     async function onPlusClick(): Promise<void> {
-        const dialog = (await invoke('get_artwork')) as any;
-        if (dialog[0]) {
-            thumbnailFile.current = dialog[1];
-            setThumbnail(`data:image/jpg;base64,${dialog[2]}`);
-            setThumbnailInvalid('');
-        }
+        return;
     }
 
     function displayThumbnail(): JSX.Element {

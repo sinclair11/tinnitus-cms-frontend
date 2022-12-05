@@ -13,7 +13,6 @@ import Artwork from '@components/artwork/artwork';
 import { deleteAlbum, uploadAlbumInfo } from '@src/services/album-services';
 import axios from 'axios';
 import { SongData } from '@src/types/album';
-import { invoke } from '@tauri-apps/api';
 import { createObjectStoragePath } from '@src/utils/helpers';
 import { Category } from '@src/types/general';
 import { routes } from '@src/router/routes';

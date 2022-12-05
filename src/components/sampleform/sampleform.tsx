@@ -7,7 +7,6 @@ import { db } from '@config/firebase';
 import { query, collection, where, getDocs, doc } from 'firebase/firestore';
 import { InputGroup, FormControl } from 'react-bootstrap';
 import Dropdown from '@components/dropdown/dropdown';
-import { dialog, invoke } from '@tauri-apps/api';
 import Artwork from '@components/artwork/artwork';
 import { CombinedStates } from '@store/reducers/custom';
 import { deleteSample, editSampleData, uploadSampleInfo } from '@services/sample-services';

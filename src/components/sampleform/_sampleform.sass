@@ -4,7 +4,7 @@
 .sample-form
     display: flex
     background: colors.$form
-    width: calc(100% - 1rem)
+    width: calc(100% - 2rem)
     height: 100%
     padding: 1rem
     border-radius: 10px
@@ -47,7 +47,7 @@
     flex-direction: column
     height: 78%
     border: 1px solid #cdcdcd
-    padding: 10px
+    padding: 20px
     border-radius: 10px
     background: #eaeaea
     box-shadow: custom.$boxshadow
@@ -121,6 +121,8 @@
 .form-btns
     position: relative
     display: flex
+    justify-content: center
+    align-items: center
     flex-direction: column
     height: 20%
 
@@ -128,13 +130,13 @@
     position: absolute
     bottom: 70px
     text-align: center
-    width: 100%
+    width: 20%
     height: 40px
-    border: 1px solid colors.$border
-    color: black
+    color: white
     font-size: 14px
     margin-top: 5%
     border-radius: 7px
+    background: colors.$secondaryBlue
 
 .upload-btn-sample
     @extend .browse-btn-sample
