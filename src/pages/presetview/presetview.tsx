@@ -35,9 +35,9 @@ const PresetView: React.FC = () => {
                 fetchPresetData(id as string);
             }
         } else {
-            navigate('/login');
+            navigate(routes.LOGIN);
         }
-    }, [getAuth(app).currentUser, id]);
+    }, [auth]);
 
     useEffect(() => {
         if (playerRef.current && dataFetched) {

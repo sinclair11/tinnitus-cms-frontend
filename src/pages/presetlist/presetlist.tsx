@@ -2,15 +2,14 @@ import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
-import { getAuth } from 'firebase/auth';
 import { useLoading } from '@pages/loading/loading';
 import SearchBar from '@components/searchbar/searchbar';
 import Sidebar from '@components/sidebar/sidebar';
 import { CombinedStates } from '@store/reducers/custom';
-import { app } from '@config/firebase';
 import { getPresets } from '@services/preset-services';
 import { PresetInfo } from '@src/types/preset';
 import { Icons } from '@utils/icons';
+import { routes } from '@src/router/routes';
 
 const PresetList: React.FC = () => {
     const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
@@ -23,9 +22,9 @@ const PresetList: React.FC = () => {
         if (auth) {
             fetchPresets();
         } else {
-            navigate('/login');
+            navigate(routes.LOGIN);
         }
-    }, [getAuth(app).currentUser]);
+    }, [auth]);
 
     async function fetchPresets(): Promise<void> {
         //Fetch all presets

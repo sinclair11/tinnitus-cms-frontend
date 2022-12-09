@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { app, db } from '@src/config/firebase';
+import { db } from '@src/config/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { routes } from '@src/router/routes';
@@ -26,7 +25,7 @@ const PresetEdit: React.FC = () => {
         } else {
             navigate(routes.LOGIN);
         }
-    }, [getAuth(app).currentUser]);
+    }, [auth]);
 
     async function fetchPresetData(): Promise<void> {
         try {

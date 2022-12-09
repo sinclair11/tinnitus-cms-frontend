@@ -2,11 +2,10 @@ import React, { useRef, useEffect, createRef } from 'react';
 import Sidebar from '@components/sidebar/sidebar';
 import { Table } from '@components/table/table';
 import { useNavigate } from 'react-router-dom';
-import { db, app } from '@config/firebase';
+import { db } from '@config/firebase';
 import { collection, doc } from 'firebase/firestore';
 import { useSelector } from 'react-redux';
 import { CombinedStates } from '@src/store/reducers/custom';
-import { getAuth } from 'firebase/auth';
 import ProgressbarUpload from '@components/progressbar/progressbar-upload';
 import AlbumForm from '@src/components/albumform/albumform';
 import Artwork from '@components/artwork/artwork';
@@ -34,9 +33,9 @@ const AlbumCreate: React.FC = () => {
         if (auth) {
             //Done loading
         } else {
-            navigate('/');
+            navigate(routes.LOGIN);
         }
-    }, [getAuth(app).currentUser]);
+    }, [auth]);
 
     function calculateDuration(songs: Array<string>): void {
         formRef.current.setTotalDuration(songs);

@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import { InputGroup, FormControl, Button, Form } from 'react-bootstrap';
 import logo from '@src/icons/logo.png';
 import { useNavigate } from 'react-router-dom';
-import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence } from 'firebase/auth';
-import { app, db } from '@config/firebase';
-import { useDispatch } from 'react-redux';
+import { db } from '@config/firebase';
+import { useDispatch, useSelector } from 'react-redux';
 import { doc, getDoc } from 'firebase/firestore';
-import { getStorage, ref, getBlob } from 'firebase/storage';
 import { useLoading } from '@pages/loading/loading';
 import { getAlbums } from '@services/album-services';
 import { getSamples } from '@services/sample-services';
@@ -19,9 +17,8 @@ const Login: React.FC = () => {
     const [passw, setPassw] = useState('');
     const [adminInvalid, setAdminInvalid] = useState('');
     const [passwInvalid, setPasswInvalid] = useState('');
-    const navigate = useNavigate();
-    const auth = getAuth(app);
     const { appendLoading, removeLoading } = useLoading();
+    const navigate = useNavigate();
 
     async function authAdmin(): Promise<void> {
         let isValid = 0;
@@ -43,8 +40,6 @@ const Login: React.FC = () => {
         if (isValid === 0) {
             //Send authentication request
             try {
-                await setPersistence(auth, browserSessionPersistence);
-                //Login in firebase
                 try {
                     const result = await axios.post(
                         'http://127.0.0.1:8080/api/login',

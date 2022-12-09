@@ -35,9 +35,9 @@ const SampleView: React.FC = () => {
                 fetchSampleData(id as string);
             }
         } else {
-            navigate('/login');
+            navigate(routes.LOGIN);
         }
-    }, [getAuth(app).currentUser, id]);
+    }, [auth]);
 
     useEffect(() => {
         if (playerRef.current && dataFetched) {

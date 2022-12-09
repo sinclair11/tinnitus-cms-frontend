@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { app } from '@config/firebase';
-import { getAuth } from 'firebase/auth';
 import { useSelector } from 'react-redux';
 import { CombinedStates } from '@store/reducers/custom';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +8,6 @@ import { Card } from 'react-bootstrap';
 import { PieChart } from 'react-minimal-pie-chart';
 import { useLoading } from '@pages/loading/loading';
 import MostRatedView from '@components/mostratedview/mostratedview';
-import { Icons } from '@utils/icons';
 
 const Dashboard: React.FC = () => {
     const navigate = useNavigate();
@@ -28,7 +25,7 @@ const Dashboard: React.FC = () => {
         } else {
             navigate(routes.LOGIN);
         }
-    }, [getAuth(app).currentUser]);
+    }, [auth]);
 
     async function fetchDashboard(): Promise<void> {
         try {

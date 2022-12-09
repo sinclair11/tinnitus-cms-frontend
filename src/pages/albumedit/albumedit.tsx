@@ -13,6 +13,7 @@ import { AlbumInfo } from '@src/types/album';
 import { editAlbumData } from '@src/services/album-services';
 import { useLoading } from '@pages/loading/loading';
 import { createObjectStoragePath } from '@src/utils/helpers';
+import { routes } from '@src/router/routes';
 
 const AlbumEdit: React.FC = () => {
     const { appendLoading, removeLoading } = useLoading();
@@ -33,9 +34,9 @@ const AlbumEdit: React.FC = () => {
             //Fetch data
             fetchAlbumData();
         } else {
-            navigate('/');
+            navigate(routes.LOGIN);
         }
-    }, [getAuth(app).currentUser]);
+    }, [auth]);
 
     async function fetchAlbumData(): Promise<void> {
         try {

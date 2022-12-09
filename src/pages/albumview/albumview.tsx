@@ -6,8 +6,7 @@ import { useSelector } from 'react-redux';
 import { CombinedStates } from '@src/store/reducers/custom';
 import Sidebar from '@components/sidebar/sidebar';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getAuth } from 'firebase/auth';
-import { app, db } from '@config/firebase';
+import { db } from '@config/firebase';
 import Artwork from '@components/artwork/artwork';
 import AlbumInfoView from '@components/albuminfo/albuminfo';
 import '@components/modal-search/modal-search.css';
@@ -40,9 +39,9 @@ const AlbumView: React.FC = () => {
                 fetchAlbumData(id as string);
             }
         } else {
-            navigate('/login');
+            navigate(routes.LOGIN);
         }
-    }, [getAuth(app).currentUser, id]);
+    }, [auth]);
 
     useEffect(() => {
         if (dataFetched) {

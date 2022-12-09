@@ -3,7 +3,6 @@ import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { CombinedStates } from '@store/reducers/custom';
-import { app } from '@config/firebase';
 import { useLoading } from '@pages/loading/loading';
 import SearchBar from '@components/searchbar/searchbar';
 import Sidebar from '@components/sidebar/sidebar';
@@ -12,6 +11,7 @@ import { getAlbums } from '@services/album-services';
 import { Container } from 'react-bootstrap';
 import { Icons } from '@src/utils/icons';
 import { createObjectStoragePath } from '@src/utils/helpers';
+import { routes } from '@src/router/routes';
 
 const AlbumList: React.FC = () => {
     const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
@@ -25,9 +25,9 @@ const AlbumList: React.FC = () => {
         if (auth) {
             fetchAlbums();
         } else {
-            navigate('/login');
+            navigate(routes.LOGIN);
         }
-    }, [getAuth(app).currentUser]);
+    }, [auth]);
 
     async function fetchAlbums(): Promise<void> {
         //Fetch all albums

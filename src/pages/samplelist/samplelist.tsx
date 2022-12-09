@@ -2,15 +2,14 @@ import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
-import { getAuth } from 'firebase/auth';
 import { useLoading } from '@pages/loading/loading';
 import SearchBar from '@components/searchbar/searchbar';
 import Sidebar from '@components/sidebar/sidebar';
 import { CombinedStates } from '@store/reducers/custom';
-import { app } from '@config/firebase';
 import { getSamples } from '@services/sample-services';
 import { SampleInfo } from '@src/types/sample';
 import { Icons } from '@utils/icons';
+import { routes } from '@src/router/routes';
 
 const SampleList: React.FC = () => {
     const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
@@ -23,9 +22,9 @@ const SampleList: React.FC = () => {
         if (auth) {
             fetchSamples();
         } else {
-            navigate('/login');
+            navigate(routes.LOGIN);
         }
-    }, [getAuth(app).currentUser]);
+    }, [auth]);
 
     async function fetchSamples(): Promise<void> {
         //Fetch all samples
