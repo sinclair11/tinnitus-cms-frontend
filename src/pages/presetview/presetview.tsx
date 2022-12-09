@@ -1,11 +1,8 @@
 import React, { createRef, useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getAuth } from 'firebase/auth';
 import { useSelector } from 'react-redux';
-import { app, db } from '@config/firebase';
 import { useLoading } from '@pages/loading/loading';
 import { CombinedStates } from '@store/reducers/custom';
-import { doc, collection, getDoc } from 'firebase/firestore';
 import { createObjectStoragePath } from '@utils/helpers';
 import Artwork from '@components/artwork/artwork';
 import Player from '@components/player/player';
@@ -49,12 +46,12 @@ const PresetView: React.FC = () => {
         try {
             appendLoading();
             //Fetch all preset data
-            const docRef = doc(collection(db, 'presets'), id);
-            const docRes = await getDoc(docRef);
-            const data = docRes.data()!;
-            data.artwork = createObjectStoragePath(preauthreq, ['presets', id, `preview.jpeg`]);
-            data.upload_date = data.upload_date.toDate().toDateString();
-            setPresetData(data);
+            // const docRef = doc(collection(db, 'presets'), id);
+            // const docRes = await getDoc(docRef);
+            // const data = docRes.data()!;
+            // data.artwork = createObjectStoragePath(preauthreq, ['presets', id, `preview.jpeg`]);
+            // data.upload_date = data.upload_date.toDate().toDateString();
+            // setPresetData(data);
             //Loading is done
             setDataFetched(true);
             removeLoading();

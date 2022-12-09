@@ -1,6 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { db } from '@src/config/firebase';
-import { doc, getDoc } from 'firebase/firestore';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { routes } from '@src/router/routes';
@@ -30,8 +28,8 @@ const SampleEdit: React.FC = () => {
     async function fetchSampleData(): Promise<void> {
         try {
             appendLoading();
-            const docRef = await getDoc(doc(db, 'samples', id as string));
-            sampleData.current = docRef.data() as SampleInfo;
+            // const docRef = await getDoc(doc(db, 'samples', id as string));
+            // sampleData.current = docRef.data() as SampleInfo;
             //Done fetching data
             setLoaded(true);
             removeLoading();

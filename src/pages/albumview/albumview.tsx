@@ -6,14 +6,12 @@ import { useSelector } from 'react-redux';
 import { CombinedStates } from '@src/store/reducers/custom';
 import Sidebar from '@components/sidebar/sidebar';
 import { useNavigate, useParams } from 'react-router-dom';
-import { db } from '@config/firebase';
 import Artwork from '@components/artwork/artwork';
 import AlbumInfoView from '@components/albuminfo/albuminfo';
 import '@components/modal-search/modal-search.css';
 import { SongData } from '@src/types/album';
 import { Table } from '@components/table/table';
 import { Icons } from '@src/utils/icons';
-import { doc, getDoc, collection } from 'firebase/firestore';
 import Player from '@components/player/player';
 import { useLoading } from '@pages/loading/loading';
 import { createObjectStoragePath } from '@src/utils/helpers';
@@ -53,12 +51,12 @@ const AlbumView: React.FC = () => {
         try {
             appendLoading();
             //Fetch all album data
-            const docRef = doc(collection(db, 'albums'), id);
-            const docRes = await getDoc(docRef);
-            const data = docRes.data()!;
-            data.artwork = createObjectStoragePath(preauthreq, ['albums', id, `artwork.jpeg`]);
-            data.upload_date = data.upload_date.toDate().toDateString();
-            setAlbumData(data);
+            // const docRef = doc(collection(db, 'albums'), id);
+            // const docRes = await getDoc(docRef);
+            // const data = docRes.data()!;
+            // data.artwork = createObjectStoragePath(preauthreq, ['albums', id, `artwork.jpeg`]);
+            // data.upload_date = data.upload_date.toDate().toDateString();
+            // setAlbumData(data);
             //Loading is done
             setDataFetched(true);
             removeLoading();

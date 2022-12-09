@@ -1,11 +1,8 @@
 import React, { createRef, useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getAuth } from 'firebase/auth';
 import { useSelector } from 'react-redux';
-import { app, db } from '@config/firebase';
 import { useLoading } from '@pages/loading/loading';
 import { CombinedStates } from '@store/reducers/custom';
-import { doc, collection, getDoc } from 'firebase/firestore';
 import { createObjectStoragePath } from '@utils/helpers';
 import Artwork from '@components/artwork/artwork';
 import Player from '@components/player/player';
@@ -49,12 +46,12 @@ const SampleView: React.FC = () => {
         try {
             appendLoading();
             //Fetch all sample data
-            const docRef = doc(collection(db, 'samples'), id);
-            const docRes = await getDoc(docRef);
-            const data = docRes.data()!;
-            data.artwork = createObjectStoragePath(preauthreq, ['samples', id, `preview.jpeg`]);
-            data.upload_date = data.upload_date.toDate().toDateString();
-            setSampleData(data);
+            // const docRef = doc(collection(db, 'samples'), id);
+            // const docRes = await getDoc(docRef);
+            // const data = docRes.data()!;
+            // data.artwork = createObjectStoragePath(preauthreq, ['samples', id, `preview.jpeg`]);
+            // data.upload_date = data.upload_date.toDate().toDateString();
+            // setSampleData(data);
             //Loading is done
             setDataFetched(true);
             removeLoading();

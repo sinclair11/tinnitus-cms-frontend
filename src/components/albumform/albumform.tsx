@@ -1,5 +1,3 @@
-import { db } from '@src/config/firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
 import React, { forwardRef, useState, useImperativeHandle, useEffect } from 'react';
 import { InputGroup, FormControl } from 'react-bootstrap';
 import Dropdown from '@components/dropdown/dropdown';
@@ -67,28 +65,28 @@ const AlbumForm = forwardRef((props: FormProps, ref?: any) => {
                 retVal++;
             } else {
                 //Different behaviour depending on the type
-                if (props.type === 'edit') {
-                    //Check if new provided name is different from the old one
-                    if (name !== props.data!.name) {
-                        const q = query(collection(db, 'albums'), where('name', '==', name));
-                        const querySnapshot = await getDocs(q);
-                        if (querySnapshot.docs.length > 0) {
-                            setNameInvalid('An album with this name already exists');
-                            retVal++;
-                        } else {
-                            setNameInvalid('');
-                        }
-                    }
-                } else if (props.type === 'create') {
-                    const q = query(collection(db, 'albums'), where('name', '==', name));
-                    const querySnapshot = await getDocs(q);
-                    if (querySnapshot.docs.length > 0) {
-                        setNameInvalid('An album with this name already exists');
-                        retVal++;
-                    } else {
-                        setNameInvalid('');
-                    }
-                }
+                // if (props.type === 'edit') {
+                //     //Check if new provided name is different from the old one
+                //     if (name !== props.data!.name) {
+                //         const q = query(collection(db, 'albums'), where('name', '==', name));
+                //         const querySnapshot = await getDocs(q);
+                //         if (querySnapshot.docs.length > 0) {
+                //             setNameInvalid('An album with this name already exists');
+                //             retVal++;
+                //         } else {
+                //             setNameInvalid('');
+                //         }
+                //     }
+                // } else if (props.type === 'create') {
+                //     const q = query(collection(db, 'albums'), where('name', '==', name));
+                //     const querySnapshot = await getDocs(q);
+                //     if (querySnapshot.docs.length > 0) {
+                //         setNameInvalid('An album with this name already exists');
+                //         retVal++;
+                //     } else {
+                //         setNameInvalid('');
+                //     }
+                // }
             }
             if (description === '') {
                 setDescInvalid('This field is mandatory');
