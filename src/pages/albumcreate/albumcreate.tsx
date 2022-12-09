@@ -177,3 +177,6 @@ const AlbumCreate: React.FC = () => {
 };
 
 export default AlbumCreate;
+function invoke(arg0: string, arg1: { name: string; path: string; file: string | undefined }): any {
+    throw new Error('Function not implemented.');
+}

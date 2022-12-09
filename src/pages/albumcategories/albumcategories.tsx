@@ -98,14 +98,11 @@ const AlbumCategories: React.FC = () => {
                     type: 'album/categories',
                     payload: temp,
                 });
-                dialog.message('Category added successfully!');
                 onModalClose();
             } else {
                 throw new Error('Could not upload category preview image');
             }
-        } catch (error: any) {
-            dialog.message(error.message);
-        }
+        } catch (error: any) {}
     }
 
     async function uploadChanges(category: Category): Promise<void> {
@@ -123,11 +120,8 @@ const AlbumCategories: React.FC = () => {
                 type: 'album/categories',
                 payload: temp,
             });
-            dialog.message('Category edited successfully!');
             onModalClose();
-        } catch (error: any) {
-            dialog.message(error.message);
-        }
+        } catch (error: any) {}
     }
 
     async function onAddCategory(): Promise<void> {
@@ -170,9 +164,7 @@ const AlbumCategories: React.FC = () => {
                 type: 'album/categories',
                 payload: temp,
             });
-        } catch (error: any) {
-            dialog.message(error.message);
-        }
+        } catch (error: any) {}
     }
 
     return (
@@ -318,3 +310,6 @@ const AlbumCategories: React.FC = () => {
 };
 
 export default AlbumCategories;
+function invoke(arg0: string, arg1: { name: string; path: string; file: string }): any {
+    throw new Error('Function not implemented.');
+}

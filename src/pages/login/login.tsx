@@ -8,10 +8,10 @@ import { useDispatch } from 'react-redux';
 import { doc, getDoc } from 'firebase/firestore';
 import { getStorage, ref, getBlob } from 'firebase/storage';
 import { useLoading } from '@pages/loading/loading';
-import { dialog } from '@tauri-apps/api';
 import { getAlbums } from '@services/album-services';
 import { getSamples } from '@services/sample-services';
 import { getPresets } from '@services/preset-services';
+import axios from 'axios';
 
 const Login: React.FC = () => {
     const dispatch = useDispatch();
@@ -45,24 +45,39 @@ const Login: React.FC = () => {
             try {
                 await setPersistence(auth, browserSessionPersistence);
                 //Login in firebase
-                await signInWithEmailAndPassword(getAuth(), admin, passw);
-                dispatch({
-                    type: 'general/auth',
-                    payload: getAuth().currentUser!.uid,
-                });
-                appendLoading();
-                await fetchCategories();
-                await fetchAlbums();
-                await fetchSamples();
-                await fetchPresets();
-                removeLoading();
-                setAdmin('');
-                setPassw('');
-                navigate('/');
+                try {
+                    const result = await axios.post(
+                        'http://127.0.0.1:8080/api/login',
+                        {},
+                        {
+                            auth: {
+                                username: admin,
+                                password: passw,
+                            },
+                        },
+                    );
+                    dispatch({
+                        type: 'general/auth',
+                        payload: result.data,
+                    });
+                    appendLoading();
+                    // await fetchCategories();
+                    // await fetchAlbums();
+                    // await fetchSamples();
+                    // await fetchPresets();
+                    removeLoading();
+                    setAdmin('');
+                    setPassw('');
+                    navigate('/');
+                } catch {
+                    setAdmin('');
+                    setPassw('');
+                    alert('Unauthorized Access');
+                }
             } catch (error: any) {
                 setAdmin('');
                 setPassw('');
-                dialog.message(error.message);
+                alert(error.message);
                 removeLoading();
             }
         } else {
@@ -125,7 +140,7 @@ const Login: React.FC = () => {
                     <InputGroup className="InputGroupPath" hasValidation>
                         <FormControl
                             required
-                            placeholder="email"
+                            placeholder="user"
                             className="LoginInput"
                             value={admin}
                             onChange={(e: any): void => {

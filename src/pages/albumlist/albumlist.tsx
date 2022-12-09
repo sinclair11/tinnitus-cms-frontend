@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { CombinedStates } from '@store/reducers/custom';
 import { app } from '@config/firebase';
 import { useLoading } from '@pages/loading/loading';
-import { dialog } from '@tauri-apps/api';
 import SearchBar from '@components/searchbar/searchbar';
 import Sidebar from '@components/sidebar/sidebar';
 import { AlbumInfo } from '@src/types/album';
@@ -45,7 +44,6 @@ const AlbumList: React.FC = () => {
             removeLoading();
         } catch (error: any) {
             removeLoading();
-            dialog.message(error.message);
         }
     }
 

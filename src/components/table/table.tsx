@@ -313,3 +313,6 @@ export const Table = forwardRef((props: TableProps, ref: any) => {
         </div>
     );
 });
+function invoke(arg0: string): any {
+    throw new Error('Function not implemented.');
+}

@@ -18,7 +18,6 @@ import { doc, getDoc, collection } from 'firebase/firestore';
 import Player from '@components/player/player';
 import { useLoading } from '@pages/loading/loading';
 import { createObjectStoragePath } from '@src/utils/helpers';
-import { dialog } from '@tauri-apps/api';
 import { routes } from '@src/router/routes';
 
 const AlbumView: React.FC = () => {
@@ -72,9 +71,7 @@ const AlbumView: React.FC = () => {
     async function getSongUrl(song: SongData): Promise<void> {
         try {
             playerRef.current.setSong(createObjectStoragePath(preauthreq, ['albums', id!, `${song.name}.wav`]));
-        } catch (error) {
-            dialog.message('Error fetching audio file');
-        }
+        } catch (error) {}
     }
 
     function displayPage(): JSX.Element {

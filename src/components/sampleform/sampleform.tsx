@@ -177,10 +177,7 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
             };
             try {
                 await editSampleData(props.id!, formData);
-                dialog.message('Sample updated successfully');
-            } catch (error: any) {
-                dialog.message(error.message);
-            }
+            } catch (error: any) {}
         }
     }
 
@@ -239,35 +236,35 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
         if (await validateInputs()) {
             const docRef = doc(collection(db, 'samples'));
             try {
-                let progress = 10;
+                const progress = 10;
                 //Initialize progress bar and start uploading
                 progressbarRef.current.enable(true);
                 updateProgress(progress, 'info', 'Uploading sample...');
                 //Upload sample audio
                 let urlPath = createObjectStoragePath(preauthreq, ['samples', docRef.id, `${name}.wav`]);
-                const result = (await invoke('upload_file', {
-                    name: name,
-                    path: urlPath,
-                    file: file.current,
-                })) as any;
-                if (result[0]) {
-                    updateProgress((progress += 50), 'success', `Sample ${name} uploaded successfully`);
-                } else {
-                    throw new Error(result[1]);
-                }
+                // const result = (await invoke('upload_file', {
+                //     name: name,
+                //     path: urlPath,
+                //     file: file.current,
+                // })) as any;
+                // if (result[0]) {
+                //     updateProgress((progress += 50), 'success', `Sample ${name} uploaded successfully`);
+                // } else {
+                //     throw new Error(result[1]);
+                // }
                 //Upload artwork
                 const preview = artworkRef.current.getData();
                 urlPath = createObjectStoragePath(preauthreq, ['samples', docRef.id, `preview.jpeg`]);
-                const previewResult = (await invoke('upload_file', {
-                    name: name,
-                    path: urlPath,
-                    file: preview,
-                })) as any;
-                if (previewResult[0]) {
-                    updateProgress((progress += 20), 'success', `Preview for sample ${name} uploaded successfully`);
-                } else {
-                    throw new Error(previewResult[1]);
-                }
+                // const previewResult = (await invoke('upload_file', {
+                //     name: name,
+                //     path: urlPath,
+                //     file: preview,
+                // })) as any;
+                // if (previewResult[0]) {
+                //     updateProgress((progress += 20), 'success', `Preview for sample ${name} uploaded successfully`);
+                // } else {
+                //     throw new Error(previewResult[1]);
+                // }
                 //Register sample in db
                 const formData = {
                     name: name,
@@ -402,3 +399,6 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
 });
 
 export default SampleForm;
+function invoke(arg0: string): any {
+    throw new Error('Function not implemented.');
+}
