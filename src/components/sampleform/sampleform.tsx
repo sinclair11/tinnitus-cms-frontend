@@ -3,8 +3,6 @@ import { SampleFormData } from '@src/types/sample';
 import { useSelector } from 'react-redux';
 import { Category } from '@src/types/general';
 import { createObjectStoragePath, getDurationFormat, parseTags } from '@utils/helpers';
-import { db } from '@config/firebase';
-import { query, collection, where, getDocs, doc } from 'firebase/firestore';
 import { InputGroup, FormControl } from 'react-bootstrap';
 import Dropdown from '@components/dropdown/dropdown';
 import Artwork from '@components/artwork/artwork';
@@ -79,28 +77,28 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
                 retVal++;
             } else {
                 //Different behaviour depending on the type
-                if (props.type === 'edit') {
-                    //Check if new provided name is different from the old one
-                    if (name !== props.data!.name) {
-                        const q = query(collection(db, 'samples'), where('name', '==', name));
-                        const querySnapshot = await getDocs(q);
-                        if (querySnapshot.docs.length > 0) {
-                            setNameInvalid('A sample with this name already exists');
-                            retVal++;
-                        } else {
-                            setNameInvalid('');
-                        }
-                    }
-                } else if (props.type === 'create') {
-                    const q = query(collection(db, 'samples'), where('name', '==', name));
-                    const querySnapshot = await getDocs(q);
-                    if (querySnapshot.docs.length > 0) {
-                        setNameInvalid('A sample with this name already exists');
-                        retVal++;
-                    } else {
-                        setNameInvalid('');
-                    }
-                }
+                // if (props.type === 'edit') {
+                //     //Check if new provided name is different from the old one
+                //     if (name !== props.data!.name) {
+                //         const q = query(collection(db, 'samples'), where('name', '==', name));
+                //         const querySnapshot = await getDocs(q);
+                //         if (querySnapshot.docs.length > 0) {
+                //             setNameInvalid('A sample with this name already exists');
+                //             retVal++;
+                //         } else {
+                //             setNameInvalid('');
+                //         }
+                //     }
+                // } else if (props.type === 'create') {
+                //     const q = query(collection(db, 'samples'), where('name', '==', name));
+                //     const querySnapshot = await getDocs(q);
+                //     if (querySnapshot.docs.length > 0) {
+                //         setNameInvalid('A sample with this name already exists');
+                //         retVal++;
+                //     } else {
+                //         setNameInvalid('');
+                //     }
+                // }
             }
             if (description === '') {
                 setDescInvalid('This field is mandatory');
@@ -148,11 +146,11 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
     }
 
     function onUploadSaveClick(): void {
-        if (props.type === 'create') {
-            onUploadClick();
-        } else if (props.type === 'edit') {
-            onSaveClick();
-        }
+        // if (props.type === 'create') {
+        //     onUploadClick();
+        // } else if (props.type === 'edit') {
+        //     onSaveClick();
+        // }
     }
 
     async function onSaveClick(): Promise<void> {
@@ -192,25 +190,25 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
             //Different behaviour depending on the type
             if (props.type === 'edit') {
                 //Check if new provided name is different from the old one
-                if (name !== props.data!.name) {
-                    const q = query(collection(db, 'samples'), where('name', '==', name));
-                    const querySnapshot = await getDocs(q);
-                    if (querySnapshot.docs.length > 0) {
-                        setNameInvalid('A sample with this name already exists');
-                        counter++;
-                    } else {
-                        setNameInvalid('');
-                    }
-                }
-            } else if (props.type === 'create') {
-                const q = query(collection(db, 'samples'), where('name', '==', name));
-                const querySnapshot = await getDocs(q);
-                if (querySnapshot.docs.length > 0) {
-                    setNameInvalid('A sample with this name already exists');
-                    counter++;
-                } else {
-                    setNameInvalid('');
-                }
+                //     if (name !== props.data!.name) {
+                //         const q = query(collection(db, 'samples'), where('name', '==', name));
+                //         const querySnapshot = await getDocs(q);
+                //         if (querySnapshot.docs.length > 0) {
+                //             setNameInvalid('A sample with this name already exists');
+                //             counter++;
+                //         } else {
+                //             setNameInvalid('');
+                //         }
+                //     }
+                // } else if (props.type === 'create') {
+                //     const q = query(collection(db, 'samples'), where('name', '==', name));
+                //     const querySnapshot = await getDocs(q);
+                //     if (querySnapshot.docs.length > 0) {
+                //         setNameInvalid('A sample with this name already exists');
+                //         counter++;
+                //     } else {
+                //         setNameInvalid('');
+                //     }
             }
         }
         if (description === '') {
@@ -233,57 +231,57 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
     }
 
     async function onUploadClick(): Promise<void> {
-        if (await validateInputs()) {
-            const docRef = doc(collection(db, 'samples'));
-            try {
-                const progress = 10;
-                //Initialize progress bar and start uploading
-                progressbarRef.current.enable(true);
-                updateProgress(progress, 'info', 'Uploading sample...');
-                //Upload sample audio
-                let urlPath = createObjectStoragePath(preauthreq, ['samples', docRef.id, `${name}.wav`]);
-                // const result = (await invoke('upload_file', {
-                //     name: name,
-                //     path: urlPath,
-                //     file: file.current,
-                // })) as any;
-                // if (result[0]) {
-                //     updateProgress((progress += 50), 'success', `Sample ${name} uploaded successfully`);
-                // } else {
-                //     throw new Error(result[1]);
-                // }
-                //Upload artwork
-                const preview = artworkRef.current.getData();
-                urlPath = createObjectStoragePath(preauthreq, ['samples', docRef.id, `preview.jpeg`]);
-                // const previewResult = (await invoke('upload_file', {
-                //     name: name,
-                //     path: urlPath,
-                //     file: preview,
-                // })) as any;
-                // if (previewResult[0]) {
-                //     updateProgress((progress += 20), 'success', `Preview for sample ${name} uploaded successfully`);
-                // } else {
-                //     throw new Error(previewResult[1]);
-                // }
-                //Register sample in db
-                const formData = {
-                    name: name,
-                    description: description,
-                    tags: parseTags('array', tags),
-                    length: length,
-                    category: category,
-                };
-                const response = await uploadSampleInfo(docRef.id, formData);
-                updateProgress(100, 'success', response);
-                progressbarRef.current.logMessage('info', 'All sample data uploaded successfully!');
-                clearStates();
-            } catch (error: any) {
-                deleteSample(docRef.id);
-                progressbarRef.current.operationFailed(error.message);
-                //Create a new cancel token
-                cancelSource.current = axios.CancelToken.source();
-            }
-        }
+        // if (await validateInputs()) {
+        //     const docRef = doc(collection(db, 'samples'));
+        //     try {
+        //         const progress = 10;
+        //         //Initialize progress bar and start uploading
+        //         progressbarRef.current.enable(true);
+        //         updateProgress(progress, 'info', 'Uploading sample...');
+        //         //Upload sample audio
+        //         let urlPath = createObjectStoragePath(preauthreq, ['samples', docRef.id, `${name}.wav`]);
+        //         const result = (await invoke('upload_file', {
+        //             name: name,
+        //             path: urlPath,
+        //             file: file.current,
+        //         })) as any;
+        //         if (result[0]) {
+        //             updateProgress((progress += 50), 'success', `Sample ${name} uploaded successfully`);
+        //         } else {
+        //             throw new Error(result[1]);
+        //         }
+        //         //Upload artwork
+        //         const preview = artworkRef.current.getData();
+        //         urlPath = createObjectStoragePath(preauthreq, ['samples', docRef.id, `preview.jpeg`]);
+        //         const previewResult = (await invoke('upload_file', {
+        //             name: name,
+        //             path: urlPath,
+        //             file: preview,
+        //         })) as any;
+        //         if (previewResult[0]) {
+        //             updateProgress((progress += 20), 'success', `Preview for sample ${name} uploaded successfully`);
+        //         } else {
+        //             throw new Error(previewResult[1]);
+        //         }
+        //         //Register sample in db
+        //         const formData = {
+        //             name: name,
+        //             description: description,
+        //             tags: parseTags('array', tags),
+        //             length: length,
+        //             category: category,
+        //         };
+        //         const response = await uploadSampleInfo(docRef.id, formData);
+        //         updateProgress(100, 'success', response);
+        //         progressbarRef.current.logMessage('info', 'All sample data uploaded successfully!');
+        //         clearStates();
+        //     } catch (error: any) {
+        //         deleteSample(docRef.id);
+        //         progressbarRef.current.operationFailed(error.message);
+        //         //Create a new cancel token
+        //         cancelSource.current = axios.CancelToken.source();
+        //     }
+        // }
     }
 
     function onUploadCancelled(): void {

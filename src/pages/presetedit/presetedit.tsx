@@ -1,6 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { db } from '@src/config/firebase';
-import { doc, getDoc } from 'firebase/firestore';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { routes } from '@src/router/routes';
@@ -30,8 +28,8 @@ const PresetEdit: React.FC = () => {
     async function fetchPresetData(): Promise<void> {
         try {
             appendLoading();
-            const docRef = await getDoc(doc(db, 'presets', id as string));
-            presetData.current = docRef.data() as PresetInfo;
+            // const docRef = await getDoc(doc(db, 'presets', id as string));
+            // presetData.current = docRef.data() as PresetInfo;
             //Done fetching data
             setLoaded(true);
             removeLoading();

@@ -1,10 +1,7 @@
 import AlbumForm from '@components/albumform/albumform';
 import Artwork from '@components/artwork/artwork';
 import Sidebar from '@components/sidebar/sidebar';
-import { app, db } from '@src/config/firebase';
 import { CombinedStates } from '@src/store/reducers/custom';
-import { getAuth } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
 import React, { createRef, useEffect, useRef, useState } from 'react';
 import { Table } from '@components/table/table';
 import { useSelector } from 'react-redux';
@@ -41,16 +38,16 @@ const AlbumEdit: React.FC = () => {
     async function fetchAlbumData(): Promise<void> {
         try {
             appendLoading();
-            const docRef = await getDoc(doc(db, 'albums', id as string));
-            albumData.current = docRef.data() as AlbumInfo;
-            albumData.current.artwork = createObjectStoragePath(preauthreq, ['albums', id!, `artwork.jpeg`]);
-            formData.current = {
-                name: albumData.current.name,
-                description: albumData.current.description,
-                tags: albumData.current.tags,
-                length: albumData.current.length,
-                category: albumData.current.category,
-            };
+            // const docRef = await getDoc(doc(db, 'albums', id as string));
+            // albumData.current = docRef.data() as AlbumInfo;
+            // albumData.current.artwork = createObjectStoragePath(preauthreq, ['albums', id!, `artwork.jpeg`]);
+            // formData.current = {
+            //     name: albumData.current.name,
+            //     description: albumData.current.description,
+            //     tags: albumData.current.tags,
+            //     length: albumData.current.length,
+            //     category: albumData.current.category,
+            // };
             //Done fetching data
             setLoaded(true);
             removeLoading();

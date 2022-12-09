@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { InputGroup, FormControl, Button, Form } from 'react-bootstrap';
 import logo from '@src/icons/logo.png';
 import { useNavigate } from 'react-router-dom';
-import { db } from '@config/firebase';
-import { useDispatch, useSelector } from 'react-redux';
-import { doc, getDoc } from 'firebase/firestore';
+import { useDispatch } from 'react-redux';
 import { useLoading } from '@pages/loading/loading';
 import { getAlbums } from '@services/album-services';
 import { getSamples } from '@services/sample-services';
@@ -81,28 +79,28 @@ const Login: React.FC = () => {
     }
 
     async function fetchCategories(): Promise<void> {
-        try {
-            let docSnap = await getDoc(doc(db, 'misc', 'albums'));
-            let data = docSnap.data()!;
-            dispatch({
-                type: 'album/categories',
-                payload: data.categories,
-            });
-            docSnap = await getDoc(doc(db, 'misc', 'samples'));
-            data = docSnap.data()!;
-            dispatch({
-                type: 'sample/categories',
-                payload: data.categories,
-            });
-            docSnap = await getDoc(doc(db, 'misc', 'presets'));
-            data = docSnap.data()!;
-            dispatch({
-                type: 'preset/categories',
-                payload: data.categories,
-            });
-        } catch (error) {
-            throw error;
-        }
+        // try {
+        //     let docSnap = await getDoc(doc(db, 'misc', 'albums'));
+        //     let data = docSnap.data()!;
+        //     dispatch({
+        //         type: 'album/categories',
+        //         payload: data.categories,
+        //     });
+        //     docSnap = await getDoc(doc(db, 'misc', 'samples'));
+        //     data = docSnap.data()!;
+        //     dispatch({
+        //         type: 'sample/categories',
+        //         payload: data.categories,
+        //     });
+        //     docSnap = await getDoc(doc(db, 'misc', 'presets'));
+        //     data = docSnap.data()!;
+        //     dispatch({
+        //         type: 'preset/categories',
+        //         payload: data.categories,
+        //     });
+        // } catch (error) {
+        //     throw error;
+        // }
     }
 
     async function fetchAlbums(): Promise<void> {

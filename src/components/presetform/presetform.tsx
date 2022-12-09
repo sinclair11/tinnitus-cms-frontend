@@ -3,8 +3,6 @@ import { PresetFormData } from '@src/types/preset';
 import { useSelector } from 'react-redux';
 import { Category } from '@src/types/general';
 import { createObjectStoragePath, getDurationFormat, parseTags } from '@utils/helpers';
-import { db } from '@config/firebase';
-import { query, collection, where, getDocs, doc } from 'firebase/firestore';
 import { InputGroup, FormControl } from 'react-bootstrap';
 import Dropdown from '@components/dropdown/dropdown';
 import Artwork from '@components/artwork/artwork';
@@ -79,28 +77,28 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
                 retVal++;
             } else {
                 //Different behaviour depending on the type
-                if (props.type === 'edit') {
-                    //Check if new provided name is different from the old one
-                    if (name !== props.data!.name) {
-                        const q = query(collection(db, 'presets'), where('name', '==', name));
-                        const querySnapshot = await getDocs(q);
-                        if (querySnapshot.docs.length > 0) {
-                            setNameInvalid('A preset with this name already exists');
-                            retVal++;
-                        } else {
-                            setNameInvalid('');
-                        }
-                    }
-                } else if (props.type === 'create') {
-                    const q = query(collection(db, 'presets'), where('name', '==', name));
-                    const querySnapshot = await getDocs(q);
-                    if (querySnapshot.docs.length > 0) {
-                        setNameInvalid('A preset with this name already exists');
-                        retVal++;
-                    } else {
-                        setNameInvalid('');
-                    }
-                }
+                // if (props.type === 'edit') {
+                //     //Check if new provided name is different from the old one
+                //     if (name !== props.data!.name) {
+                //         const q = query(collection(db, 'presets'), where('name', '==', name));
+                //         const querySnapshot = await getDocs(q);
+                //         if (querySnapshot.docs.length > 0) {
+                //             setNameInvalid('A preset with this name already exists');
+                //             retVal++;
+                //         } else {
+                //             setNameInvalid('');
+                //         }
+                //     }
+                // } else if (props.type === 'create') {
+                //     const q = query(collection(db, 'presets'), where('name', '==', name));
+                //     const querySnapshot = await getDocs(q);
+                //     if (querySnapshot.docs.length > 0) {
+                //         setNameInvalid('A preset with this name already exists');
+                //         retVal++;
+                //     } else {
+                //         setNameInvalid('');
+                //     }
+                // }
             }
             if (description === '') {
                 setDescInvalid('This field is mandatory');
@@ -182,28 +180,28 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
             counter++;
         } else {
             //Different behaviour depending on the type
-            if (props.type === 'edit') {
-                //Check if new provided name is different from the old one
-                if (name !== props.data!.name) {
-                    const q = query(collection(db, 'presets'), where('name', '==', name));
-                    const querySnapshot = await getDocs(q);
-                    if (querySnapshot.docs.length > 0) {
-                        setNameInvalid('A preset with this name already exists');
-                        counter++;
-                    } else {
-                        setNameInvalid('');
-                    }
-                }
-            } else if (props.type === 'create') {
-                const q = query(collection(db, 'presets'), where('name', '==', name));
-                const querySnapshot = await getDocs(q);
-                if (querySnapshot.docs.length > 0) {
-                    setNameInvalid('A preset with this name already exists');
-                    counter++;
-                } else {
-                    setNameInvalid('');
-                }
-            }
+            // if (props.type === 'edit') {
+            //     //Check if new provided name is different from the old one
+            //     if (name !== props.data!.name) {
+            //         const q = query(collection(db, 'presets'), where('name', '==', name));
+            //         const querySnapshot = await getDocs(q);
+            //         if (querySnapshot.docs.length > 0) {
+            //             setNameInvalid('A preset with this name already exists');
+            //             counter++;
+            //         } else {
+            //             setNameInvalid('');
+            //         }
+            //     }
+            // } else if (props.type === 'create') {
+            //     const q = query(collection(db, 'presets'), where('name', '==', name));
+            //     const querySnapshot = await getDocs(q);
+            //     if (querySnapshot.docs.length > 0) {
+            //         setNameInvalid('A preset with this name already exists');
+            //         counter++;
+            //     } else {
+            //         setNameInvalid('');
+            //     }
+            // }
         }
         if (description === '') {
             setDescInvalid('This field is mandatory');
@@ -225,57 +223,57 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
     }
 
     async function onUploadClick(): Promise<void> {
-        if (await validateInputs()) {
-            const docRef = doc(collection(db, 'presets'));
-            try {
-                let progress = 10;
-                //Initialize progress bar and start uploading
-                progressbarRef.current.enable(true);
-                updateProgress(progress, 'info', 'Uploading preset...');
-                //Upload preset audio
-                let urlPath = createObjectStoragePath(preauthreq, ['presets', docRef.id, `${name}.wav`]);
-                const result = (await invoke('upload_file', {
-                    name: name,
-                    path: urlPath,
-                    file: file.current,
-                })) as any;
-                if (result[0]) {
-                    updateProgress((progress += 50), 'success', `Preset ${name} uploaded successfully`);
-                } else {
-                    throw new Error(result[1]);
-                }
-                //Upload artwork
-                const preview = artworkRef.current.getData();
-                urlPath = createObjectStoragePath(preauthreq, ['presets', docRef.id, `preview.jpeg`]);
-                const previewResult = (await invoke('upload_file', {
-                    name: name,
-                    path: urlPath,
-                    file: preview,
-                })) as any;
-                if (previewResult[0]) {
-                    updateProgress((progress += 20), 'success', `Preview for preset ${name} uploaded successfully`);
-                } else {
-                    throw new Error(previewResult[1]);
-                }
-                //Register preset in db
-                const formData = {
-                    name: name,
-                    description: description,
-                    tags: parseTags('array', tags),
-                    length: length,
-                    category: category,
-                };
-                const response = await uploadPresetInfo(docRef.id, formData);
-                updateProgress(100, 'success', response);
-                progressbarRef.current.logMessage('info', 'All preset data uploaded successfully!');
-                clearStates();
-            } catch (error: any) {
-                deletePreset(docRef.id);
-                progressbarRef.current.operationFailed(error.message);
-                //Create a new cancel token
-                cancelSource.current = axios.CancelToken.source();
-            }
-        }
+        // if (await validateInputs()) {
+        //     const docRef = doc(collection(db, 'presets'));
+        //     try {
+        //         let progress = 10;
+        //         //Initialize progress bar and start uploading
+        //         progressbarRef.current.enable(true);
+        //         updateProgress(progress, 'info', 'Uploading preset...');
+        //         //Upload preset audio
+        //         let urlPath = createObjectStoragePath(preauthreq, ['presets', docRef.id, `${name}.wav`]);
+        //         const result = (await invoke('upload_file', {
+        //             name: name,
+        //             path: urlPath,
+        //             file: file.current,
+        //         })) as any;
+        //         if (result[0]) {
+        //             updateProgress((progress += 50), 'success', `Preset ${name} uploaded successfully`);
+        //         } else {
+        //             throw new Error(result[1]);
+        //         }
+        //         //Upload artwork
+        //         const preview = artworkRef.current.getData();
+        //         urlPath = createObjectStoragePath(preauthreq, ['presets', docRef.id, `preview.jpeg`]);
+        //         const previewResult = (await invoke('upload_file', {
+        //             name: name,
+        //             path: urlPath,
+        //             file: preview,
+        //         })) as any;
+        //         if (previewResult[0]) {
+        //             updateProgress((progress += 20), 'success', `Preview for preset ${name} uploaded successfully`);
+        //         } else {
+        //             throw new Error(previewResult[1]);
+        //         }
+        //         //Register preset in db
+        //         const formData = {
+        //             name: name,
+        //             description: description,
+        //             tags: parseTags('array', tags),
+        //             length: length,
+        //             category: category,
+        //         };
+        //         const response = await uploadPresetInfo(docRef.id, formData);
+        //         updateProgress(100, 'success', response);
+        //         progressbarRef.current.logMessage('info', 'All preset data uploaded successfully!');
+        //         clearStates();
+        //     } catch (error: any) {
+        //         deletePreset(docRef.id);
+        //         progressbarRef.current.operationFailed(error.message);
+        //         //Create a new cancel token
+        //         cancelSource.current = axios.CancelToken.source();
+        //     }
+        // }
     }
 
     function onUploadCancelled(): void {

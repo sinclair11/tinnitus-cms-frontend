@@ -2,8 +2,6 @@ import React, { useRef, useEffect, createRef } from 'react';
 import Sidebar from '@components/sidebar/sidebar';
 import { Table } from '@components/table/table';
 import { useNavigate } from 'react-router-dom';
-import { db } from '@config/firebase';
-import { collection, doc } from 'firebase/firestore';
 import { useSelector } from 'react-redux';
 import { CombinedStates } from '@src/store/reducers/custom';
 import ProgressbarUpload from '@components/progressbar/progressbar-upload';
@@ -61,73 +59,73 @@ const AlbumCreate: React.FC = () => {
         const formValidation = await formRef.current.getInputValidation();
         const artworkValidation = await artworkRef.current.getInputValidation();
         const tableValidation = await tableRef.current.getInputValidation();
-        if (formValidation && artworkValidation && tableValidation) {
-            //Reset list of uploaded files
-            filesUploaded.current = [];
-            const docRef = doc(collection(db, 'albums'));
+        // if (formValidation && artworkValidation && tableValidation) {
+        //     //Reset list of uploaded files
+        //     filesUploaded.current = [];
+        //     // const docRef = doc(collection(db, 'albums'));
 
-            try {
-                let progress = 10;
-                //Initialize progress bar and start uploading
-                progressbarRef.current.enable(true);
-                updateProgress(progress, 'info', 'Uploading album...');
-                //Upload album songs to OCI storage
-                const tableData: SongData[] = tableRef.current.getData();
-                const step = Math.floor(80 / tableData.length);
-                for (const song of tableData) {
-                    filesUploaded.current.push(`${song.name}.wav`);
-                    const songToUpload = {
-                        album: docRef.id,
-                        name: song.name,
-                        filePath: song.file,
-                    };
-                    const urlPath = createObjectStoragePath(preauthreq, [
-                        'albums',
-                        songToUpload.album,
-                        `${songToUpload.name}.wav`,
-                    ]);
-                    const res = (await invoke('upload_file', {
-                        name: song.name,
-                        path: urlPath,
-                        file: song.file,
-                    })) as any;
-                    if (res[0]) {
-                        updateProgress((progress += step), 'success', `Album song ${song.name} uploaded successfully`);
-                    } else {
-                        throw new Error(res[1]);
-                    }
-                }
-                //Upload album artwork to OCI storage
-                const artwork = artworkRef.current.getData() as string;
-                const artworkToUpload = {
-                    album: docRef.id,
-                    filePath: artwork,
-                };
-                const urlPath = createObjectStoragePath(preauthreq, ['albums', artworkToUpload.album, `artwork.jpeg`]);
-                let res = (await invoke('upload_file', {
-                    name: 'cover art',
-                    path: urlPath,
-                    file: artworkToUpload.filePath,
-                })) as any;
-                if (res[0]) {
-                    updateProgress(95, 'success', 'Album cover art uploaded successfully');
-                } else {
-                    throw new Error(res[1]);
-                }
-                //Register album in database
-                const albumData = formRef.current.getData();
-                res = await uploadAlbumInfo(docRef.id, albumData, tableData);
-                updateProgress(100, 'success', res);
-                progressbarRef.current.logMessage('info', 'All album data uploaded successfully!');
-                //Clear all states to avoid uploading the same album again
-                clearChildrenStates();
-            } catch (error: any) {
-                deleteAlbum(docRef.id);
-                progressbarRef.current.operationFailed(error.message);
-                //Create a new cancel token
-                cancelSource.current = axios.CancelToken.source();
-            }
-        }
+        //     try {
+        //         let progress = 10;
+        //         //Initialize progress bar and start uploading
+        //         progressbarRef.current.enable(true);
+        //         updateProgress(progress, 'info', 'Uploading album...');
+        //         //Upload album songs to OCI storage
+        //         const tableData: SongData[] = tableRef.current.getData();
+        //         const step = Math.floor(80 / tableData.length);
+        //         for (const song of tableData) {
+        //             filesUploaded.current.push(`${song.name}.wav`);
+        //             const songToUpload = {
+        //                 album: docRef.id,
+        //                 name: song.name,
+        //                 filePath: song.file,
+        //             };
+        //             const urlPath = createObjectStoragePath(preauthreq, [
+        //                 'albums',
+        //                 songToUpload.album,
+        //                 `${songToUpload.name}.wav`,
+        //             ]);
+        //             const res = (await invoke('upload_file', {
+        //                 name: song.name,
+        //                 path: urlPath,
+        //                 file: song.file,
+        //             })) as any;
+        //             if (res[0]) {
+        //                 updateProgress((progress += step), 'success', `Album song ${song.name} uploaded successfully`);
+        //             } else {
+        //                 throw new Error(res[1]);
+        //             }
+        //         }
+        //         //Upload album artwork to OCI storage
+        //         const artwork = artworkRef.current.getData() as string;
+        //         const artworkToUpload = {
+        //             album: docRef.id,
+        //             filePath: artwork,
+        //         };
+        //         const urlPath = createObjectStoragePath(preauthreq, ['albums', artworkToUpload.album, `artwork.jpeg`]);
+        //         let res = (await invoke('upload_file', {
+        //             name: 'cover art',
+        //             path: urlPath,
+        //             file: artworkToUpload.filePath,
+        //         })) as any;
+        //         if (res[0]) {
+        //             updateProgress(95, 'success', 'Album cover art uploaded successfully');
+        //         } else {
+        //             throw new Error(res[1]);
+        //         }
+        //         //Register album in database
+        //         const albumData = formRef.current.getData();
+        //         res = await uploadAlbumInfo(docRef.id, albumData, tableData);
+        //         updateProgress(100, 'success', res);
+        //         progressbarRef.current.logMessage('info', 'All album data uploaded successfully!');
+        //         //Clear all states to avoid uploading the same album again
+        //         clearChildrenStates();
+        //     } catch (error: any) {
+        //         deleteAlbum(docRef.id);
+        //         progressbarRef.current.operationFailed(error.message);
+        //         //Create a new cancel token
+        //         cancelSource.current = axios.CancelToken.source();
+        //     }
+        // }
     }
 
     function displayContent(): JSX.Element {

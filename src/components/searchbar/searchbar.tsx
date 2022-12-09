@@ -4,8 +4,6 @@ import { Icons } from '@utils/icons';
 import { dialogStyles } from '@src/styles/styles';
 import Modal from 'react-modal';
 import { MessageBox } from '@src/components/messagebox/messagebox';
-import { collection, getDocs, limit, query, where } from 'firebase/firestore';
-import { db } from '@src/config/firebase';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { CombinedStates } from '@store/reducers/custom';
@@ -47,39 +45,39 @@ const SearchBar = forwardRef((props: SearchProps, ref?: any) => {
                 const temp = searchVal[0].toUpperCase() + searchVal.slice(1);
                 const albums = [];
                 //Search for album starting with the given string
-                const albumsRef = collection(db, props.pathToSearch);
-                const q = query(albumsRef, where('name', '>=', temp), limit(7));
-                const q1 = query(q, where('name', '<=', temp + '\uf8ff'), limit(7));
-                const querySnapshot = await getDocs(q1);
-                const docs = querySnapshot.docs;
-                if (docs.length > 0) {
-                    //Take all data now to avoid doing an additional request
-                    for (const doc of docs) {
-                        const data = doc.data();
-                        const arworkUrl = createObjectStoragePath(preauthreq, ['albums', doc.id, `artwork.jpeg`]);
-                        albums.push({
-                            id: doc.id,
-                            name: data.name,
-                            upload_date: data.upload_date.toDate().toDateString(),
-                            category: data.category,
-                            description: data.description,
-                            tags: data.tags,
-                            length: data.length,
-                            artwork: arworkUrl,
-                            songs: data.songs,
-                            total_songs: data.total_songs,
-                            likes: data.likes,
-                            favorites: data.favorites,
-                            reviews: data.reviews,
-                        });
-                    }
-                    setSearchedAlbums(albums);
-                    //Show search results
-                    document.getElementById('searchbar-results')!.style.display = 'flex';
-                } else {
-                    //No results found
-                    document.getElementById('searchbar-results')!.style.display = 'none';
-                }
+                // const albumsRef = collection(db, props.pathToSearch);
+                // const q = query(albumsRef, where('name', '>=', temp), limit(7));
+                // const q1 = query(q, where('name', '<=', temp + '\uf8ff'), limit(7));
+                // const querySnapshot = await getDocs(q1);
+                // const docs = querySnapshot.docs;
+                // if (docs.length > 0) {
+                //     //Take all data now to avoid doing an additional request
+                //     for (const doc of docs) {
+                //         const data = doc.data();
+                //         const arworkUrl = createObjectStoragePath(preauthreq, ['albums', doc.id, `artwork.jpeg`]);
+                //         albums.push({
+                //             id: doc.id,
+                //             name: data.name,
+                //             upload_date: data.upload_date.toDate().toDateString(),
+                //             category: data.category,
+                //             description: data.description,
+                //             tags: data.tags,
+                //             length: data.length,
+                //             artwork: arworkUrl,
+                //             songs: data.songs,
+                //             total_songs: data.total_songs,
+                //             likes: data.likes,
+                //             favorites: data.favorites,
+                //             reviews: data.reviews,
+                //         });
+                //     }
+                //     setSearchedAlbums(albums);
+                //     //Show search results
+                //     document.getElementById('searchbar-results')!.style.display = 'flex';
+                // } else {
+                //     //No results found
+                //     document.getElementById('searchbar-results')!.style.display = 'none';
+                // }
             } catch (error: any) {
                 //Notify user about error
                 setMessage(error.message);

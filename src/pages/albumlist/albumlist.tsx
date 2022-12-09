@@ -1,4 +1,3 @@
-import { getAuth } from 'firebase/auth';
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
