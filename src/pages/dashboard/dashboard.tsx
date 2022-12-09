@@ -6,7 +6,6 @@ import { CombinedStates } from '@store/reducers/custom';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '@src/router/routes';
 import Sidebar from '@components/sidebar/sidebar';
-import { dialog } from '@tauri-apps/api';
 import { Card } from 'react-bootstrap';
 import { PieChart } from 'react-minimal-pie-chart';
 import { useLoading } from '@pages/loading/loading';
@@ -38,7 +37,6 @@ const Dashboard: React.FC = () => {
             setLoaded(true);
             removeLoading();
         } catch (error: any) {
-            dialog.message(error.message);
             removeLoading();
         }
     }

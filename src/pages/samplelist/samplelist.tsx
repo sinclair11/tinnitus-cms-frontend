@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import { getAuth } from 'firebase/auth';
-import { dialog } from '@tauri-apps/api';
 import { useLoading } from '@pages/loading/loading';
 import SearchBar from '@components/searchbar/searchbar';
 import Sidebar from '@components/sidebar/sidebar';
@@ -39,7 +38,6 @@ const SampleList: React.FC = () => {
             removeLoading();
         } catch (error: any) {
             removeLoading();
-            dialog.message(error.message);
         }
     }
 

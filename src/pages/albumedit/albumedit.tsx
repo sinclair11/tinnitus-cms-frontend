@@ -12,7 +12,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AlbumInfo } from '@src/types/album';
 import { editAlbumData } from '@src/services/album-services';
 import { useLoading } from '@pages/loading/loading';
-import { dialog } from '@tauri-apps/api';
 import { createObjectStoragePath } from '@src/utils/helpers';
 
 const AlbumEdit: React.FC = () => {
@@ -54,9 +53,7 @@ const AlbumEdit: React.FC = () => {
             //Done fetching data
             setLoaded(true);
             removeLoading();
-        } catch (error: any) {
-            // dialog.message(error.message);
-        }
+        } catch (error: any) {}
     }
 
     function calculateDuration(songs: Array<string>): void {
@@ -70,11 +67,8 @@ const AlbumEdit: React.FC = () => {
                 const album = formRef.current.getData();
                 const songs = tableRef.current.getData();
                 await editAlbumData(id as string, album, songs);
-                dialog.message('Album updated successfully');
             }
-        } catch (error: any) {
-            dialog.message(error.message);
-        }
+        } catch (error: any) {}
     }
 
     function displayPage(): JSX.Element {

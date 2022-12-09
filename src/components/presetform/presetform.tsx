@@ -169,10 +169,7 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
             };
             try {
                 await editPresetData(props.id!, formData);
-                dialog.message('Preset updated successfully');
-            } catch (error: any) {
-                dialog.message(error.message);
-            }
+            } catch (error: any) {}
         }
     }
 
@@ -394,3 +391,6 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
 });
 
 export default PresetForm;
+function invoke(arg0: string, arg1: { name: string; path: string; file: string }): any {
+    throw new Error('Function not implemented.');
+}

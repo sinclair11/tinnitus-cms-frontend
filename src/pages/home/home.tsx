@@ -19,7 +19,7 @@ const Home: React.FC = () => {
         } else {
             navigate('/login');
         }
-    }, [getAuth(app).currentUser]);
+    }, [auth]);
 
     function goToRoute(route: string): void {
         navigate(route);

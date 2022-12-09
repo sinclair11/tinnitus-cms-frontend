@@ -38,7 +38,6 @@ const SampleEdit: React.FC = () => {
             removeLoading();
         } catch (error) {
             removeLoading();
-            //dialog.message(error.message);
         }
     }
 

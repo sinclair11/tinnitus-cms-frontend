@@ -13,7 +13,7 @@ export type ResdataState = {
 };
 
 export type GeneralState = {
-    auth: any;
+    auth: string;
 };
 
 export type AlbumState = {

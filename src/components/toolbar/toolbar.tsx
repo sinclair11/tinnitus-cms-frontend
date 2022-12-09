@@ -4,7 +4,6 @@ import { ToolbarIcons } from '@utils/icons';
 import ReactTooltip from 'react-tooltip';
 import { deleteAlbum } from '@src/services/album-services';
 import { useLoading } from '@pages/loading/loading';
-import { dialog } from '@tauri-apps/api';
 import { deleteSample } from '@services/sample-services';
 
 type ToolbarProps = {
@@ -43,8 +42,7 @@ const Toolbar = forwardRef((props: ToolbarProps, ref?: any) => {
     }
 
     async function onRequestDeleteClick(): Promise<void> {
-        const clicked = await dialog.confirm('', 'Are you sure you want to delete this item ?');
-        if (clicked) {
+        if (false) {
             try {
                 //Activate loading screen
                 if (props.itemId !== undefined) {
@@ -71,7 +69,6 @@ const Toolbar = forwardRef((props: ToolbarProps, ref?: any) => {
             } catch (error: any) {
                 //Set message and notify user about occured error
                 removeLoading();
-                dialog.message(error.message);
             }
         }
     }
