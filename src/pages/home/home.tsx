@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import { ButtonGroup, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import logoIcon from '@src/icons/logo.png';
-import { getAuth } from 'firebase/auth';
-import { app } from '@src/config/firebase';
 import { CombinedStates } from '@store/reducers/custom';
 import { useSelector } from 'react-redux';
 import { routes } from '@src/router/routes';
@@ -17,7 +15,7 @@ const Home: React.FC = () => {
         if (auth) {
             //Continue in page
         } else {
-            navigate('/login');
+            navigate(routes.LOGIN);
         }
     }, [auth]);
 

@@ -1,5 +1,5 @@
 import Sidebar from '@components/sidebar/sidebar';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Icons, ToolbarIcons } from '@src/utils/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { CombinedStates } from '@store/reducers/custom';
@@ -12,6 +12,8 @@ import { addCategory, editCategory, deleteCategory } from '@services/general-ser
 import Artwork from '@components/artwork/artwork';
 import { Category } from '@src/types/general';
 import { createObjectStoragePath } from '@src/utils/helpers';
+import { useNavigate } from 'react-router-dom';
+import { routes } from '@src/router/routes';
 
 const PresetCategories: React.FC = () => {
     const dispatch = useDispatch();
@@ -30,6 +32,16 @@ const PresetCategories: React.FC = () => {
     const [modalType, setModalType] = useState('create');
     const artworkRef = useRef<any>(null);
     const [categoryImg, setCategoryImg] = useState('');
+    const navigate = useNavigate();
+    const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
+
+    useEffect(() => {
+        if (auth) {
+            //Continue in page
+        } else {
+            navigate(routes.LOGIN);
+        }
+    }, [auth]);
 
     function onPlusClick(): void {
         setInputDisabled(false);

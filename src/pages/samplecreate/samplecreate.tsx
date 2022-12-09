@@ -5,8 +5,6 @@ import { CombinedStates } from '@store/reducers/custom';
 import { Category } from '@src/types/general';
 import { useSelector } from 'react-redux';
 import { routes } from '@src/router/routes';
-import { getAuth } from 'firebase/auth';
-import { app } from '@src/config/firebase';
 import SampleForm from '@components/sampleform/sampleform';
 
 const SampleCreate: React.FC = () => {
@@ -24,7 +22,7 @@ const SampleCreate: React.FC = () => {
         } else {
             navigate(routes.LOGIN);
         }
-    }, [getAuth(app).currentUser]);
+    }, [auth]);
 
     function displayContent(): JSX.Element {
         if (categories.length > 0) {
