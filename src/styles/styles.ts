@@ -62,7 +62,7 @@ export const progressStyles = {
 export const categoryStyles = {
     content: {
         width: '620px',
-        height: '390px',
+        height: '420px',
         display: 'inline-block',
         justifyContent: 'right',
         alignItems: 'center',

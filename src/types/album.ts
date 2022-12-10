@@ -27,9 +27,9 @@ export type AlbumInfo = {
     category: string;
     likes: number;
     reviews: number;
-    upload_date: any;
+    uploadDate: any;
     artwork: string;
-    total_songs: number;
+    totalSongs: number;
     favorites: number;
     songs: Array<SongData>;
 };
