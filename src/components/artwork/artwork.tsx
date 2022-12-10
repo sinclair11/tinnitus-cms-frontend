@@ -34,13 +34,20 @@ const Artwork = forwardRef((props: ArtworkProps, ref: any) => {
         },
     }));
 
-    async function onPlusClick(): Promise<void> {
-        return;
+    function onPlusClick(): void {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.png, .jpg, .jpeg';
+        input.onchange = (): void => {
+            setThumbnail(input.files![0]);
+            setThumbnailInvalid('');
+        };
+        input.click();
     }
 
     function displayThumbnail(): JSX.Element {
         if (thumbnail) {
-            return <img src={thumbnail} />;
+            return <img src={URL.createObjectURL(thumbnail)} />;
         } else {
             return (
                 <p className="no-img-txt">
