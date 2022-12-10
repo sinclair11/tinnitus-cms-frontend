@@ -40,7 +40,7 @@ const Login: React.FC = () => {
             try {
                 try {
                     const result = await axios.post(
-                        'http://127.0.0.1:8080/api/login',
+                        'http://127.0.0.1:8080/login',
                         {},
                         {
                             auth: {
@@ -49,10 +49,24 @@ const Login: React.FC = () => {
                             },
                         },
                     );
+                    //Store JWT
                     dispatch({
                         type: 'general/auth',
-                        payload: result.data,
+                        payload: result.data.token,
                     });
+                    //Store pre-authenticated request for object storage
+                    dispatch({
+                        type: 'oci/config',
+                        payload: {
+                            prereq: result.data.preauthreq,
+                        },
+                    });
+                    setTimeout((): void => {
+                        dispatch({
+                            type: 'general/auth',
+                            payload: result.data,
+                        });
+                    }, 7200000);
                     appendLoading();
                     // await fetchCategories();
                     // await fetchAlbums();
