@@ -28,7 +28,7 @@ const AlbumCreate: React.FC = () => {
     const content = useRef(null);
 
     useEffect(() => {
-        if (auth) {
+        if (auth != '') {
             //Done loading
         } else {
             navigate(routes.LOGIN);

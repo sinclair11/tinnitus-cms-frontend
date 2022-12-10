@@ -21,7 +21,7 @@ const AlbumList: React.FC = () => {
     const preauthreq = useSelector<CombinedStates>((state) => state.ociReducer.config.prereq) as string;
 
     useEffect(() => {
-        if (auth) {
+        if (auth != '') {
             fetchAlbums();
         } else {
             navigate(routes.LOGIN);
@@ -32,7 +32,7 @@ const AlbumList: React.FC = () => {
         //Fetch all albums
         try {
             appendLoading();
-            const albums = await getAlbums();
+            const albums = await getAlbums(auth);
             albums.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
             //Add cover art paths
             albums.forEach((album) => {
@@ -128,7 +128,7 @@ const AlbumsTable: React.FC<AlbumTableProps> = (props: AlbumTableProps) => {
                                     <p>{row.name}</p>
                                 </td>
                                 <td>
-                                    <p>{row.upload_date.toDate().toDateString()}</p>
+                                    <p>{row.uploadDate}</p>
                                 </td>
                                 <td>
                                     <p>{row.songs.length}</p>

@@ -19,7 +19,7 @@ const PresetList: React.FC = () => {
     const [presets, setPresets] = React.useState<PresetInfo[]>([]);
 
     useEffect(() => {
-        if (auth) {
+        if (auth != '') {
             fetchPresets();
         } else {
             navigate(routes.LOGIN);

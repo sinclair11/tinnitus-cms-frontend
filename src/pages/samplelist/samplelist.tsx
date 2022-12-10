@@ -19,7 +19,7 @@ const SampleList: React.FC = () => {
     const [samples, setSamples] = React.useState<SampleInfo[]>([]);
 
     useEffect(() => {
-        if (auth) {
+        if (auth != '') {
             fetchSamples();
         } else {
             navigate(routes.LOGIN);

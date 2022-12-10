@@ -16,6 +16,7 @@ import Player from '@components/player/player';
 import { useLoading } from '@pages/loading/loading';
 import { createObjectStoragePath } from '@src/utils/helpers';
 import { routes } from '@src/router/routes';
+import { getAlbum } from '@services/album-services';
 
 const AlbumView: React.FC = () => {
     const { appendLoading, removeLoading } = useLoading();
@@ -30,9 +31,8 @@ const AlbumView: React.FC = () => {
     const preauthreq = useSelector<CombinedStates>((state) => state.ociReducer.config.prereq) as string;
 
     useEffect(() => {
-        if (auth) {
+        if (auth != '') {
             if (id !== '0') {
-                setDataFetched(false);
                 //Load data for selected album
                 fetchAlbumData(id as string);
             }
@@ -51,24 +51,26 @@ const AlbumView: React.FC = () => {
         try {
             appendLoading();
             //Fetch all album data
-            // const docRef = doc(collection(db, 'albums'), id);
-            // const docRes = await getDoc(docRef);
-            // const data = docRes.data()!;
+            const album = await getAlbum(auth, id);
+            console.log(album);
+            setDataFetched(true);
+            setAlbumData(album);
             // data.artwork = createObjectStoragePath(preauthreq, ['albums', id, `artwork.jpeg`]);
             // data.upload_date = data.upload_date.toDate().toDateString();
-            // setAlbumData(data);
             //Loading is done
-            setDataFetched(true);
             removeLoading();
         } catch (error) {
             //! Undefined behaviour on error handling
+            removeLoading();
         }
     }
 
     async function getSongUrl(song: SongData): Promise<void> {
         try {
             playerRef.current.setSong(createObjectStoragePath(preauthreq, ['albums', id!, `${song.name}.wav`]));
-        } catch (error) {}
+        } catch (error) {
+            throw error;
+        }
     }
 
     function displayPage(): JSX.Element {

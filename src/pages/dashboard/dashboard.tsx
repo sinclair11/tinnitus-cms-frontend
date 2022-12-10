@@ -18,7 +18,7 @@ const Dashboard: React.FC = () => {
     const [playStoreSales, setPlayStoreSales] = useState(0);
 
     useEffect(() => {
-        if (auth) {
+        if (auth != '') {
             //Fetch data
             appendLoading();
             fetchDashboard();

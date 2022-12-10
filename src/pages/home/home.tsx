@@ -12,7 +12,7 @@ const Home: React.FC = () => {
     const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
 
     useEffect(() => {
-        if (auth) {
+        if (auth != '') {
             //Continue in page
         } else {
             navigate(routes.LOGIN);

@@ -36,7 +36,7 @@ const AlbumCategories: React.FC = () => {
     const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
 
     useEffect(() => {
-        if (auth) {
+        if (auth != '') {
             //Continue in page
         } else {
             navigate(routes.LOGIN);
@@ -322,6 +322,3 @@ const AlbumCategories: React.FC = () => {
 };
 
 export default AlbumCategories;
-function invoke(arg0: string, arg1: { name: string; path: string; file: string }): any {
-    throw new Error('Function not implemented.');
-}
