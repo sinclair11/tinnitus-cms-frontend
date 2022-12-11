@@ -14,10 +14,10 @@ const AlbumInfoView: React.FC<AlbumInfoProps> = (props: AlbumInfoProps) => {
                 <div className="general-info">
                     <p>{`Name: ${props.data.name}`}</p>
                     <p>{`Category: ${props.data.category}`}</p>
-                    <p>{`Total songs: ${props.data.total_songs}`}</p>
+                    <p>{`Total songs: ${props.data.totalSongs}`}</p>
                     <p>{`Duration: ${props.data.length}`}</p>
-                    <p>{`Upload date: ${props.data.upload_date}`}</p>
-                    <p>{`Tags: ${props.data.tags[0] === '' ? 'N/A' : parseTags('string', props.data.tags)}`}</p>
+                    <p>{`Upload date: ${props.data.uploadDate}`}</p>
+                    <p>{`Tags: ${props.data.tags === null ? 'N/A' : parseTags('string', props.data.tags)}`}</p>
                 </div>
                 <div className="usage-info">
                     <div className="usage-info-block">
