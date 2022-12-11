@@ -15,6 +15,11 @@ export function albumReducer(state: AlbumState = initialState, action: action): 
                 ...state,
                 categories: payload,
             };
+        case 'album/category':
+            return {
+                ...state,
+                categories: [...state.categories, payload],
+            };
         case 'album/setAlbums':
             return {
                 ...state,

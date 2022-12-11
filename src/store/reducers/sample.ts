@@ -15,6 +15,11 @@ export function sampleReducer(state: SampleState = initialState, action: action)
                 ...state,
                 categories: payload,
             };
+        case 'sample/category':
+            return {
+                ...state,
+                categories: [...state.categories, payload],
+            };
         case 'samples/setSamples':
             return {
                 ...state,
