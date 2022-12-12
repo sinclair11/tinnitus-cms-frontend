@@ -1,7 +1,7 @@
 export type SongData = {
     file?: string;
     name: string;
-    pos: string | number;
+    position: string | number;
     length: string;
     category: string;
     likes?: number;

@@ -1,7 +1,7 @@
 import { action, GeneralState } from './custom';
 
 const initialState: GeneralState = {
-    auth: '',
+    auth: null,
 };
 
 export function generalReducer(state: GeneralState = initialState, action: action): GeneralState {
