@@ -1,48 +1,47 @@
 import { AlbumFormData, SongData, AlbumInfo } from '@src/types/album';
+import axios from 'axios';
 
-export async function getAlbums(): Promise<AlbumInfo[]> {
+export async function getAlbums(auth: string): Promise<AlbumInfo[]> {
     try {
-        const albums = new Array<AlbumInfo>();
-        // const ref = collection(db, 'albums');
-        // const q = await getDocs(ref);
-        // const docs = q.docs;
-        // for (const doc of docs) {
-        //     const album = doc.data() as AlbumInfo;
-        //     album.id = doc.id;
-        //     albums.push(album);
-        // }
-        return albums;
+        return await (
+            await axios.get('http://localhost:8080/api/admin/albums', {
+                headers: { Authorization: `Bearer ${auth}` },
+            })
+        ).data;
     } catch (error) {
         throw error;
     }
 }
 
-export async function uploadAlbumInfo(id: string, info: AlbumFormData, tableData: SongData[]): Promise<string> {
+export async function getAlbum(auth: string, id: string): Promise<AlbumInfo> {
     try {
-        // const albumDocRef = doc(db, 'albums', id);
-        const temp = tableData.map((x) => x);
-        //Copy songs URL
-        for (let i = 0; i < temp.length; i++) {
-            delete temp[i].file;
-        }
-        //Upload general information about album
-        // await setDoc(albumDocRef, {
-        //     name: info.name,
-        //     upload_date: new Date(),
-        //     category: info.category,
-        //     description: info.description,
-        //     tags: info.tags,
-        //     length: info.length,
-        //     songs: temp,
-        //     total_songs: temp.length,
-        //     likes: 0,
-        //     favorites: 0,
-        //     reviews: 0,
-        // });
-        return 'Album registered in database';
+        return await (
+            await axios.get(`http://localhost:8080/api/admin/albums/album?id=${id}`, {
+                headers: { Authorization: `Bearer ${auth}` },
+            })
+        ).data;
     } catch (error) {
         throw error;
     }
+}
+
+export async function uploadAlbumInfo(auth: string, album: AlbumInfo): Promise<string> {
+    try {
+        const response = await axios({
+            method: 'POST',
+            url: 'http://localhost:8080/api/admin/albums',
+            data: album,
+            headers: { Authorization: `Bearer ${auth}` },
+        });
+
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function uploadAlbumFile(file: any): Promise<string> {
+
 }
 
 export async function editAlbumData(id: string, info: AlbumFormData, tableData: SongData[]): Promise<string> {
