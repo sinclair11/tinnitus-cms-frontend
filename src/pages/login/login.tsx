@@ -3,10 +3,6 @@ import { InputGroup, FormControl, Button, Form } from 'react-bootstrap';
 import logo from '@src/icons/logo.png';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { useLoading } from '@pages/loading/loading';
-import { getAlbums } from '@services/album-services';
-import { getSamples } from '@services/sample-services';
-import { getPresets } from '@services/preset-services';
 import axios from 'axios';
 
 const Login: React.FC = () => {
@@ -15,7 +11,6 @@ const Login: React.FC = () => {
     const [passw, setPassw] = useState('');
     const [adminInvalid, setAdminInvalid] = useState('');
     const [passwInvalid, setPasswInvalid] = useState('');
-    const { appendLoading, removeLoading } = useLoading();
     const navigate = useNavigate();
 
     async function authAdmin(): Promise<void> {
@@ -39,7 +34,7 @@ const Login: React.FC = () => {
             //Send authentication request
             try {
                 try {
-                    const result = await axios.post(
+                    const response = await axios.post(
                         'http://127.0.0.1:8080/login',
                         {},
                         {
@@ -49,30 +44,19 @@ const Login: React.FC = () => {
                             },
                         },
                     );
+                    console.log(response.data);
                     //Store JWT
                     dispatch({
                         type: 'general/auth',
-                        payload: result.data.token,
+                        payload: response.data.token,
                     });
                     //Store pre-authenticated request for object storage
                     dispatch({
                         type: 'oci/config',
                         payload: {
-                            prereq: result.data.preauthreq,
+                            prereq: response.data.preauthreq,
                         },
                     });
-                    setTimeout((): void => {
-                        dispatch({
-                            type: 'general/auth',
-                            payload: result.data,
-                        });
-                    }, 7200000);
-                    appendLoading();
-                    // await fetchCategories();
-                    // await fetchAlbums();
-                    // await fetchSamples();
-                    // await fetchPresets();
-                    removeLoading();
                     setAdmin('');
                     setPassw('');
                     navigate('/');
@@ -85,57 +69,10 @@ const Login: React.FC = () => {
                 setAdmin('');
                 setPassw('');
                 alert(error.message);
-                removeLoading();
             }
         } else {
             /*Do nothing*/
         }
-    }
-
-    async function fetchCategories(): Promise<void> {
-        // try {
-        //     let docSnap = await getDoc(doc(db, 'misc', 'albums'));
-        //     let data = docSnap.data()!;
-        //     dispatch({
-        //         type: 'album/categories',
-        //         payload: data.categories,
-        //     });
-        //     docSnap = await getDoc(doc(db, 'misc', 'samples'));
-        //     data = docSnap.data()!;
-        //     dispatch({
-        //         type: 'sample/categories',
-        //         payload: data.categories,
-        //     });
-        //     docSnap = await getDoc(doc(db, 'misc', 'presets'));
-        //     data = docSnap.data()!;
-        //     dispatch({
-        //         type: 'preset/categories',
-        //         payload: data.categories,
-        //     });
-        // } catch (error) {
-        //     throw error;
-        // }
-    }
-
-    async function fetchAlbums(): Promise<void> {
-        dispatch({
-            type: 'album/setAlbums',
-            payload: await getAlbums(),
-        });
-    }
-
-    async function fetchSamples(): Promise<void> {
-        dispatch({
-            type: 'sample/setSamples',
-            payload: await getSamples(),
-        });
-    }
-
-    async function fetchPresets(): Promise<void> {
-        dispatch({
-            type: 'preset/setPresets',
-            payload: await getPresets(),
-        });
     }
 
     return (
