@@ -7,8 +7,7 @@ import Modal from 'react-modal';
 import { categoryStyles } from '@src/styles/styles';
 import { InputGroup, FormControl } from 'react-bootstrap';
 import { SketchPicker } from 'react-color';
-import { v4 as uuid } from 'uuid';
-import { addCategory, editCategory, deleteCategory } from '@services/general-services';
+import { insertCategory, updateCategory, deleteCategory, getCategories } from '@services/categories-services';
 import Artwork from '@components/artwork/artwork';
 import { Category } from '@src/types/general';
 import { createObjectStoragePath } from '@src/utils/helpers';
@@ -36,7 +35,7 @@ const AlbumCategories: React.FC = () => {
     const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
 
     useEffect(() => {
-        if (auth) {
+        if (auth != '') {
             //Continue in page
         } else {
             navigate(routes.LOGIN);
@@ -71,12 +70,7 @@ const AlbumCategories: React.FC = () => {
         currentIt.current = it;
         setInputDisabled(true);
         setType('Edit');
-        const preview = createObjectStoragePath(preauthreq, [
-            'albums',
-            'categories',
-            categories[it].id,
-            'preview.jpeg',
-        ]);
+        const preview = createObjectStoragePath(preauthreq, ['categories', `${categories[it].id}.jpg`]);
         setCategoryImg(preview);
         setModalType('edit');
         setAddCategoryModal(true);
@@ -84,56 +78,38 @@ const AlbumCategories: React.FC = () => {
 
     async function addNewCategory(): Promise<void> {
         try {
-            const file = artworkRef.current.getData() as string;
-            const data = {
-                name: name,
-                id: uuid(),
-                description: description,
-                color: color,
-            };
-            const urlPath = createObjectStoragePath(preauthreq, [
-                'albums',
-                'categories',
-                data.id,
-                `preview.${file.split('.').pop()}`,
-            ]);
-            const result = (await invoke('upload_file', {
-                name: 'cover art',
-                path: urlPath,
-                file: file,
-            })) as any;
-            if (result[0]) {
-                await addCategory(data, 'albums');
-                const temp = categories.map((x: any) => x);
-                temp.push(data);
-                dispatch({
-                    type: 'album/categories',
-                    payload: temp,
-                });
-                onModalClose();
-            } else {
-                throw new Error('Could not upload category preview image');
-            }
-        } catch (error: any) {}
+            const form = new FormData();
+            form.append('name', name);
+            form.append('description', description);
+            form.append('color', color);
+            form.append('type', 'album');
+            form.append('file', artworkRef.current.getData(), 'artwork.jpg');
+
+            const response = await insertCategory(auth, form);
+            onModalClose();
+
+            updateView();
+            alert(response);
+        } catch (error: any) {
+            alert(error);
+        }
     }
 
     async function uploadChanges(category: Category): Promise<void> {
         try {
-            const data = {
+            const response = await updateCategory(auth, {
                 name: category.name,
                 id: category.id,
                 description: description,
                 color: color,
-            };
-            await editCategory(data, 'albums');
-            const temp = categories.map((x: any) => x);
-            temp[currentIt.current] = data;
-            dispatch({
-                type: 'album/categories',
-                payload: temp,
+                type: 'album',
             });
             onModalClose();
-        } catch (error: any) {}
+            alert(response);
+            await updateView();
+        } catch (error: any) {
+            alert(error);
+        }
     }
 
     async function onAddCategory(): Promise<void> {
@@ -169,14 +145,21 @@ const AlbumCategories: React.FC = () => {
 
     async function onCategoryDelete(it: number): Promise<void> {
         try {
-            await deleteCategory(categories[it], 'albums');
-            const temp = categories.map((x: any) => x);
-            temp.splice(it, 1);
-            dispatch({
-                type: 'album/categories',
-                payload: temp,
-            });
-        } catch (error: any) {}
+            const response = await deleteCategory(auth, categories[it].id);
+            alert(response);
+            await updateView();
+        } catch (error: any) {
+            alert(error);
+        }
+    }
+
+    async function updateView(): Promise<void> {
+        const categories = await getCategories(auth, 'album');
+
+        dispatch({
+            type: 'album/categories',
+            payload: categories,
+        });
     }
 
     return (
@@ -322,6 +305,3 @@ const AlbumCategories: React.FC = () => {
 };
 
 export default AlbumCategories;
-function invoke(arg0: string, arg1: { name: string; path: string; file: string }): any {
-    throw new Error('Function not implemented.');
-}

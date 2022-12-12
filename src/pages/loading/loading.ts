@@ -209,7 +209,7 @@ export function useLoading() {
 
     const htmlContent =
         // eslint-disable-next-line max-len
-        '<<div class="boxes"><div class="box"><div></div><div></div><div></div><div></div></div><div class="box"><div></div><div></div><div></div><div></div></div><div class="box"><div></div><div></div><div></div><div></div></div><div class="box"><div></div><div></div><div></div><div></div></div></div><p>Loading...</p></div>';
+        '<div class="boxes"><div class="box"><div></div><div></div><div></div><div></div></div><div class="box"><div></div><div></div><div></div><div></div></div><div class="box"><div></div><div></div><div></div><div></div></div><div class="box"><div></div><div></div><div></div><div></div></div></div><p>Loading...</p></div>';
     const loading = document.createElement('div');
     loading.id = 'section-preloader';
     loading.innerHTML = htmlContent;

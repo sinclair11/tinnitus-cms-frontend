@@ -17,13 +17,11 @@ const app = <App title="Tinnitus CMS" version="1.0.0" />;
 const persist = reduxPersist();
 
 root.render(
-    <StrictMode>
-        <Provider store={persist.store}>
-            <PersistGate loading={null} persistor={persist.persistor}>
-                {app}
-            </PersistGate>
-        </Provider>
-    </StrictMode>,
+    <Provider store={persist.store}>
+        <PersistGate loading={null} persistor={persist.persistor}>
+            {app}
+        </PersistGate>
+    </Provider>,
 );
 
 removeLoading();

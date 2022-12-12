@@ -17,7 +17,7 @@ const PresetCreate: React.FC = () => {
     const content = useRef<any>(null);
 
     useEffect(() => {
-        if (auth) {
+        if (auth != '') {
             //Done loading
         } else {
             navigate(routes.LOGIN);

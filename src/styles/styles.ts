@@ -46,7 +46,7 @@ export const progressStyles = {
         display: 'inline-block',
         justifyContent: 'right',
         alignItems: 'center',
-        backgroundColor: '#0a2351',
+        backgroundColor: '#273f86',
         top: '50%',
         left: '50%',
         right: 'auto',
@@ -54,7 +54,6 @@ export const progressStyles = {
         marginRight: '-50%',
         transform: 'translate(-50%, -50%)',
         borderRadius: '5px',
-        border: '1px solid aqua',
         overflow: 'hidden',
     },
 };
@@ -62,7 +61,7 @@ export const progressStyles = {
 export const categoryStyles = {
     content: {
         width: '620px',
-        height: '390px',
+        height: '420px',
         display: 'inline-block',
         justifyContent: 'right',
         alignItems: 'center',

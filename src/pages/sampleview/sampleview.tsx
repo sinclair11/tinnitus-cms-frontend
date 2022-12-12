@@ -26,7 +26,7 @@ const SampleView: React.FC = () => {
     const preauthreq = useSelector<CombinedStates>((state) => state.ociReducer.config.prereq) as string;
 
     useEffect(() => {
-        if (auth) {
+        if (auth != '') {
             if (id !== '0') {
                 //Load data for selected album
                 fetchSampleData(id as string);

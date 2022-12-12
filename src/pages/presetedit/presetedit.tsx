@@ -17,7 +17,7 @@ const PresetEdit: React.FC = () => {
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        if (auth) {
+        if (auth != '') {
             //Fetch data
             fetchPresetData();
         } else {

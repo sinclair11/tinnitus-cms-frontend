@@ -1,7 +1,7 @@
 export type SongData = {
     file?: string;
     name: string;
-    pos: string | number;
+    position: string | number;
     length: string;
     category: string;
     likes?: number;
@@ -27,9 +27,9 @@ export type AlbumInfo = {
     category: string;
     likes: number;
     reviews: number;
-    upload_date: any;
+    uploadDate: any;
     artwork: string;
-    total_songs: number;
+    totalSongs: number;
     favorites: number;
     songs: Array<SongData>;
 };

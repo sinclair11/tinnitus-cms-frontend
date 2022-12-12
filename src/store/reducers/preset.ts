@@ -15,6 +15,11 @@ export function presetReducer(state: PresetState = initialState, action: action)
                 ...state,
                 categories: payload,
             };
+        case 'preset/category':
+            return {
+                ...state,
+                categories: [...state.categories, payload],
+            };
         case 'preset/setPresets':
             return {
                 ...state,
