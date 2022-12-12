@@ -54,7 +54,32 @@ const AlbumCreate: React.FC = () => {
         progressbarRef.current.logMessage(type, message);
     }
 
+    async function registerAlbumInDb(): Promise<boolean> {
+        const formValidation = await formRef.current.getInputValidation();
+        const tableValidation = await tableRef.current.getInputValidation();
+        if (formValidation && tableValidation) {
+            const form = new FormData();
+            const albumDataCopy = formRef.current.getData();
+            albumDataCopy.likes = 0;
+            albumDataCopy.favorites = 0;
+            albumDataCopy.reviews = 0;
+            const tableDataCopy = tableRef.current.getData();
+            for (const entry of tableDataCopy) {
+                delete entry.file;
+            }
+            albumDataCopy.totalSongs = tableDataCopy.length;
+            albumDataCopy.songs = tableDataCopy;
+            const response = await uploadAlbumInfo(auth, albumDataCopy);
+            alert(response);
+            // TODO: Send data to server
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     async function onUpload(): Promise<void> {
+        const result = await registerAlbumInDb();
         //Verify if all inputs are valid
         const formValidation = await formRef.current.getInputValidation();
         const artworkValidation = await artworkRef.current.getInputValidation();
@@ -174,6 +199,3 @@ const AlbumCreate: React.FC = () => {
 };
 
 export default AlbumCreate;
-function invoke(arg0: string, arg1: { name: string; path: string; file: string | undefined }): any {
-    throw new Error('Function not implemented.');
-}
