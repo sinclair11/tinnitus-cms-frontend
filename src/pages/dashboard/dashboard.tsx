@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { CombinedStates } from '@store/reducers/custom';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '@src/router/routes';
@@ -8,9 +8,14 @@ import { Card } from 'react-bootstrap';
 import { PieChart } from 'react-minimal-pie-chart';
 import { useLoading } from '@pages/loading/loading';
 import MostRatedView from '@components/mostratedview/mostratedview';
+import { getAlbums } from '@services/album-services';
+import { getPresets } from '@services/preset-services';
+import { getSamples } from '@services/sample-services';
+import { getCategories } from '@services/categories-services';
 
 const Dashboard: React.FC = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const { appendLoading, removeLoading } = useLoading();
     const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
     const [loaded, setLoaded] = useState(false);
@@ -20,7 +25,6 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         if (auth != '') {
             //Fetch data
-            appendLoading();
             fetchDashboard();
         } else {
             navigate(routes.LOGIN);
@@ -30,7 +34,12 @@ const Dashboard: React.FC = () => {
     async function fetchDashboard(): Promise<void> {
         try {
             //TODO: Fetch dashboard data
+            appendLoading();
             calculateSalesDistribution();
+            fetchAlbums();
+            // fetchSamples();
+            // fetchPresets();
+            fetchCategories();
             setLoaded(true);
             removeLoading();
         } catch (error: any) {
@@ -38,9 +47,44 @@ const Dashboard: React.FC = () => {
         }
     }
 
-    // async function fetchUsersData(): Promise<> {
+    async function fetchAlbums(): Promise<void> {
+        dispatch({
+            type: 'album/setAlbums',
+            payload: await getAlbums(auth),
+        });
+    }
 
-    // }
+    async function fetchSamples(): Promise<void> {
+        dispatch({
+            type: 'sample/setSamples',
+            payload: await getSamples(),
+        });
+    }
+
+    async function fetchPresets(): Promise<void> {
+        dispatch({
+            type: 'preset/setPresets',
+            payload: await getPresets(),
+        });
+    }
+
+    async function fetchCategories(): Promise<void> {
+        const categories = await getCategories(auth, 'all');
+        console.log(categories);
+
+        dispatch({
+            type: 'album/categories',
+            payload: categories.albumCategories,
+        });
+        dispatch({
+            type: 'preset/categories',
+            payload: categories.presetCategories,
+        });
+        dispatch({
+            type: 'sample/categories',
+            payload: categories.sampleCategories,
+        });
+    }
 
     function calculateSalesDistribution(): any {
         //TODO: Fetch AppStore sales;
