@@ -163,37 +163,45 @@ export const Table = forwardRef((props: TableProps, ref: any) => {
         temp.splice(id, 1);
         //Replace all positions
         for (let i = 0; i < temp.length; i++) {
-            temp[i].pos = i + 1;
+            temp[i].position = i + 1;
         }
 
         setTableData(temp);
     }
 
-    async function onPlusClick(): Promise<void> {
-        const dialog = (await invoke('get_audio_files')) as any;
-        if (dialog[0] !== undefined) {
+    function onPlusClick(): void {
+        const input = document.createElement('input')!;
+        input.setAttribute('type', 'file');
+        input.setAttribute('multiple', 'true');
+        input.setAttribute('accept', 'audio/*');
+        input.addEventListener('change', () => {
             document.getElementById('table-loading')!.style.display = 'flex';
-            const temp = [];
-            let position = tableData.length > 0 ? tableData.length + 1 : 1;
-            for (const song of dialog[1]) {
-                temp.push({
-                    file: song.file,
-                    name: song.name,
-                    pos: position++,
-                    length: getDurationFormat(song.duration),
-                    category: categories[0].name,
-                    likes: 0,
-                    favorites: 0,
-                    views: 0,
-                });
+            if (input.files && input.files.length > 0) {
+                const files = input.files;
+                const temp: any[] = [];
+                let position = tableData.length > 0 ? tableData.length + 1 : 1;
+                for (const file of files) {
+                    const audio = new Audio();
+                    audio.src = URL.createObjectURL(file);
+                    audio.addEventListener('loadedmetadata', () => {
+                        temp.push({
+                            file: file,
+                            name: file.name.replace(/\.[^/.]+$/, ''),
+                            position: position++,
+                            length: getDurationFormat(audio.duration),
+                            category: categories[0].name,
+                            likes: 0,
+                            favorites: 0,
+                            views: 0,
+                        });
+                        setTableData([...tableData, ...temp]);
+                        setInvalid('');
+                        document.getElementById('table-loading')!.style.display = 'none';
+                    });
+                }
             }
-            setTableData([...tableData, ...temp]);
-            setInvalid('');
-            //Loading ended
-            document.getElementById('table-loading')!.style.display = 'none';
-            //Trigger animation for new inserted entry
-            // document.getElementById(`${tableData.length}`)!.classList.add('table-row-animation');
-        }
+        });
+        input.showPicker();
     }
 
     function moveUp(id: number): void {
@@ -206,9 +214,9 @@ export const Table = forwardRef((props: TableProps, ref: any) => {
         } else {
             //Interchange elements and change positions in album
             temp[id] = temp[id - 1];
-            temp[id].pos = (temp[id].pos as number) + 1;
+            temp[id].position = (temp[id].position as number) + 1;
             temp[id - 1] = tempEl;
-            temp[id - 1].pos = (temp[id - 1].pos as number) - 1;
+            temp[id - 1].position = (temp[id - 1].position as number) - 1;
             //Set highlight animation
             currentRowHtml = document.getElementById(`${id - 1}`)!;
             currentRowHtml.classList.add('table-row-animation');
@@ -226,9 +234,9 @@ export const Table = forwardRef((props: TableProps, ref: any) => {
         } else {
             //Interchange elements and change positions in album
             temp[id] = temp[id + 1];
-            temp[id].pos = (temp[id].pos as number) - 1;
+            temp[id].position = (temp[id].position as number) - 1;
             temp[id + 1] = tempEl;
-            temp[id + 1].pos = (temp[id + 1].pos as number) + 1;
+            temp[id + 1].position = (temp[id + 1].position as number) + 1;
             //Set highlight animation
             currentRowHtml = document.getElementById(`${id + 1}`)!;
             currentRowHtml.classList.add('table-row-animation');
@@ -261,7 +269,7 @@ export const Table = forwardRef((props: TableProps, ref: any) => {
                                     onRowAnimationEnd(i);
                                 }}
                             >
-                                <td>{row.pos}</td>
+                                <td>{row.position}</td>
                                 {displayName(props.type, i, row.name)}
                                 <td>{row.length}</td>
                                 <td id={`row-category-${i}`}>{displayCategory(props.type, i, row.category)}</td>
@@ -300,19 +308,9 @@ export const Table = forwardRef((props: TableProps, ref: any) => {
             {props.type === 'create' ? (
                 <div className="plus-body" onClick={onPlusClick}>
                     <img src={Icons.Plus} className="plus" />
-                    {/* <input
-                        ref={inputSong}
-                        className="input-plus"
-                        type="file"
-                        accept="audio/*"
-                        onChange={(event): Promise<void> => getSong(event)}
-                    /> */}
                 </div>
             ) : null}
             <ReactTooltip />
         </div>
     );
 });
-function invoke(arg0: string): any {
-    throw new Error('Function not implemented.');
-}
