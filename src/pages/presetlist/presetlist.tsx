@@ -1,30 +1,28 @@
 import React, { useRef, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import { useLoading } from '@pages/loading/loading';
 import SearchBar from '@components/searchbar/searchbar';
 import Sidebar from '@components/sidebar/sidebar';
-import { CombinedStates } from '@store/reducers/custom';
 import { getPresets } from '@services/preset-services';
 import { PresetInfo } from '@src/types/preset';
 import { Icons } from '@utils/icons';
 import { routes } from '@src/router/routes';
 
 const PresetList: React.FC = () => {
-    const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
+    const token = window.sessionStorage.getItem('token');
     const navigate = useNavigate();
     const { appendLoading, removeLoading } = useLoading();
     const searchbarRef = useRef<any>(null);
     const [presets, setPresets] = React.useState<PresetInfo[]>([]);
 
     useEffect(() => {
-        if (auth != '') {
+        if (token != '') {
             fetchPresets();
         } else {
             navigate(routes.LOGIN);
         }
-    }, [auth]);
+    }, [token]);
 
     async function fetchPresets(): Promise<void> {
         //Fetch all presets

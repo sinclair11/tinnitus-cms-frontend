@@ -55,13 +55,8 @@ const Login: React.FC = () => {
                     },
                 });
                 //Set timer to refresh token
-                window.setTimeout(async (): Promise<void> => {
-                    const response = await refreshToken(token.value);
-                    dispatch({
-                        type: 'general/auth',
-                        payload: response.data,
-                    });
-                }, token.expiration - 1000 * 60);
+                refreshToken(token.value, token.expiration);
+                //Clear and go to home
                 setAdmin('');
                 setPassw('');
                 navigate('/');

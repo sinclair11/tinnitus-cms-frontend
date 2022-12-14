@@ -18,7 +18,6 @@ const AlbumCreate: React.FC = () => {
     const navigate = useNavigate();
     const preauthreq = useSelector<CombinedStates>((state) => state.ociReducer.config.prereq) as string;
     const categories = useSelector<CombinedStates>((state) => state.albumReducer.categories) as Category[];
-    const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
     const filesUploaded = useRef<any>([]);
     const tableRef = createRef<any>();
     const formRef = createRef<any>();
@@ -26,14 +25,15 @@ const AlbumCreate: React.FC = () => {
     const progressbarRef = createRef<any>();
     const cancelSource = useRef(axios.CancelToken.source());
     const content = useRef(null);
+    const token = window.sessionStorage.getItem('token');
 
     useEffect(() => {
-        if (auth != '') {
+        if (token != null) {
             //Done loading
         } else {
             navigate(routes.LOGIN);
         }
-    }, [auth]);
+    }, [token]);
 
     function calculateDuration(songs: Array<string>): void {
         formRef.current.setTotalDuration(songs);
@@ -69,7 +69,7 @@ const AlbumCreate: React.FC = () => {
             }
             albumDataCopy.totalSongs = tableDataCopy.length;
             albumDataCopy.songs = tableDataCopy;
-            const response = await uploadAlbumInfo(auth, albumDataCopy);
+            const response = await uploadAlbumInfo(albumDataCopy);
             alert(response);
             // TODO: Send data to server
             return true;

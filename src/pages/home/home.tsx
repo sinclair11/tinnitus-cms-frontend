@@ -2,22 +2,20 @@ import React, { useEffect } from 'react';
 import { ButtonGroup, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import logoIcon from '@src/icons/logo.png';
-import { CombinedStates } from '@store/reducers/custom';
-import { useSelector } from 'react-redux';
 import { routes } from '@src/router/routes';
 import { Icons } from '@utils/icons';
 
 const Home: React.FC = () => {
     const navigate = useNavigate();
-    const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
+    const token = window.sessionStorage.getItem('token');
 
     useEffect(() => {
-        if (auth != '') {
+        if (token != null) {
             //Continue in page
         } else {
             navigate(routes.LOGIN);
         }
-    }, [auth]);
+    }, [token]);
 
     function goToRoute(route: string): void {
         navigate(route);

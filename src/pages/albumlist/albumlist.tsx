@@ -13,26 +13,26 @@ import { createObjectStoragePath } from '@src/utils/helpers';
 import { routes } from '@src/router/routes';
 
 const AlbumList: React.FC = () => {
-    const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
     const navigate = useNavigate();
     const { appendLoading, removeLoading } = useLoading();
     const searchbarRef = useRef<any>(null);
     const [albums, setAlbums] = React.useState<AlbumInfo[]>([]);
     const preauthreq = useSelector<CombinedStates>((state) => state.ociReducer.config.prereq) as string;
+    const token = window.sessionStorage.getItem('token');
 
     useEffect(() => {
-        if (auth != '') {
+        if (token != '') {
             fetchAlbums();
         } else {
             navigate(routes.LOGIN);
         }
-    }, [auth]);
+    }, [token]);
 
     async function fetchAlbums(): Promise<void> {
         //Fetch all albums
         try {
             appendLoading();
-            const albums = await getAlbums(auth);
+            const albums = await getAlbums();
             albums.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
             //Add cover art paths
             albums.forEach((album) => {

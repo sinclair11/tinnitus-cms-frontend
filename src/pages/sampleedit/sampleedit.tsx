@@ -1,15 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { routes } from '@src/router/routes';
-import { CombinedStates } from '@store/reducers/custom';
 import { useLoading } from '@pages/loading/loading';
-import { SampleInfo } from 'types/sample';
 import Sidebar from '@components/sidebar/sidebar';
 import SampleForm from '@components/sampleform/sampleform';
 
 const SampleEdit: React.FC = () => {
-    const auth = useSelector<CombinedStates>((state: CombinedStates) => state.generalReducer.auth) as any;
+    const token = window.sessionStorage.getItem('token');
     const { appendLoading, removeLoading } = useLoading();
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
@@ -17,13 +14,13 @@ const SampleEdit: React.FC = () => {
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        if (auth != '') {
+        if (token != '') {
             //Fetch data
             fetchSampleData();
         } else {
             navigate(routes.LOGIN);
         }
-    }, [auth]);
+    }, [token]);
 
     async function fetchSampleData(): Promise<void> {
         try {

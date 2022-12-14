@@ -1,15 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { routes } from '@src/router/routes';
-import { CombinedStates } from '@store/reducers/custom';
 import { useLoading } from '@pages/loading/loading';
-import { PresetInfo } from '@src/types/preset';
 import Sidebar from '@components/sidebar/sidebar';
 import PresetForm from '@components/presetform/presetform';
 
 const PresetEdit: React.FC = () => {
-    const auth = useSelector<CombinedStates>((state: CombinedStates) => state.generalReducer.auth) as any;
+    const token = window.sessionStorage.getItem('token');
     const { appendLoading, removeLoading } = useLoading();
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
@@ -17,13 +14,13 @@ const PresetEdit: React.FC = () => {
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        if (auth != '') {
+        if (token != '') {
             //Fetch data
             fetchPresetData();
         } else {
             navigate(routes.LOGIN);
         }
-    }, [auth]);
+    }, [token]);
 
     async function fetchPresetData(): Promise<void> {
         try {

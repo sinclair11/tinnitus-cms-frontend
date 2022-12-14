@@ -18,7 +18,7 @@ const PresetView: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [presetData, setPresetData] = useState<any>(null);
     const [dataFetched, setDataFetched] = useState(false);
-    const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
+    const token = window.sessionStorage.getItem('token');
     const navigate = useNavigate();
     const searchbarRef = createRef<any>();
     const playerRef = useRef<any>(null);
@@ -26,7 +26,7 @@ const PresetView: React.FC = () => {
     const preauthreq = useSelector<CombinedStates>((state) => state.ociReducer.config.prereq) as string;
 
     useEffect(() => {
-        if (auth != '') {
+        if (token != '') {
             if (id !== '0') {
                 //Load data for selected album
                 fetchPresetData(id as string);
@@ -34,7 +34,7 @@ const PresetView: React.FC = () => {
         } else {
             navigate(routes.LOGIN);
         }
-    }, [auth]);
+    }, [token]);
 
     useEffect(() => {
         if (playerRef.current && dataFetched) {
