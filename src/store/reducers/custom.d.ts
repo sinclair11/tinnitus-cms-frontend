@@ -12,10 +12,6 @@ export type ResdataState = {
     checks: unknown;
 };
 
-export type GeneralState = {
-    auth: any;
-};
-
 export type AlbumState = {
     categories: Category[];
     albums: AlbumInfo[];
@@ -39,7 +35,6 @@ export type CombinedStates = {
     ociReducer: OciState;
     resdataReducer: ResdataState;
     progressReducer: ProgState;
-    generalReducer: GeneralState;
     albumReducer: AlbumState;
     sampleReducer: SampleState;
     presetReducer: PresetState;
