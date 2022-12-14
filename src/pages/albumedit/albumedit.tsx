@@ -16,7 +16,6 @@ const AlbumEdit: React.FC = () => {
     const { appendLoading, removeLoading } = useLoading();
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
     const preauthreq = useSelector<CombinedStates>((state) => state.ociReducer.config.prereq) as string;
     const tableRef = createRef<any>();
     const formRef = createRef<any>();
@@ -25,15 +24,16 @@ const AlbumEdit: React.FC = () => {
     const [loaded, setLoaded] = useState(false);
     const albumData = useRef<any>(null);
     const formData = useRef<any>(null);
+    const token = window.sessionStorage.getItem('token');
 
     useEffect(() => {
-        if (auth) {
+        if (token) {
             //Fetch data
             fetchAlbumData();
         } else {
             navigate(routes.LOGIN);
         }
-    }, [auth]);
+    }, [token]);
 
     async function fetchAlbumData(): Promise<void> {
         try {

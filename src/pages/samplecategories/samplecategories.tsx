@@ -32,15 +32,15 @@ const PresetCategories: React.FC = () => {
     const artworkRef = useRef<any>(null);
     const [categoryImg, setCategoryImg] = useState('');
     const navigate = useNavigate();
-    const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
+    const token = window.sessionStorage.getItem('token');
 
     useEffect(() => {
-        if (auth != '') {
+        if (token != '') {
             //Continue in page
         } else {
             navigate(routes.LOGIN);
         }
-    }, [auth]);
+    }, [token]);
 
     function onPlusClick(): void {
         setInputDisabled(false);
@@ -85,7 +85,7 @@ const PresetCategories: React.FC = () => {
             form.append('type', 'sample');
             form.append('file', artworkRef.current.getData(), 'artwork.jpg');
 
-            const response = await insertCategory(auth, form);
+            const response = await insertCategory(form);
             onModalClose();
 
             updateView();
@@ -97,7 +97,7 @@ const PresetCategories: React.FC = () => {
 
     async function uploadChanges(category: Category): Promise<void> {
         try {
-            const response = await updateCategory(auth, {
+            const response = await updateCategory({
                 name: category.name,
                 id: category.id,
                 description: description,
@@ -145,7 +145,7 @@ const PresetCategories: React.FC = () => {
 
     async function onCategoryDelete(it: number): Promise<void> {
         try {
-            const response = await deleteCategory(auth, categories[it].id);
+            const response = await deleteCategory(categories[it].id);
             alert(response);
             await updateView();
         } catch (error: any) {
@@ -154,7 +154,7 @@ const PresetCategories: React.FC = () => {
     }
 
     async function updateView(): Promise<void> {
-        const categories = await getCategories(auth, 'sample');
+        const categories = await getCategories('sample');
 
         dispatch({
             type: 'sample/categories',

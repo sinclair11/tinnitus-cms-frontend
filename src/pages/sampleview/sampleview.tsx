@@ -14,11 +14,11 @@ import SampleInfoView from '@components/sampleinfo/sampleinfo';
 import { routes } from '@src/router/routes';
 
 const SampleView: React.FC = () => {
+    const token = window.sessionStorage.getItem('token');
     const { appendLoading, removeLoading } = useLoading();
     const { id } = useParams<{ id: string }>();
     const [sampleData, setSampleData] = useState<any>(null);
     const [dataFetched, setDataFetched] = useState(false);
-    const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
     const navigate = useNavigate();
     const searchbarRef = createRef<any>();
     const playerRef = useRef<any>(null);
@@ -26,7 +26,7 @@ const SampleView: React.FC = () => {
     const preauthreq = useSelector<CombinedStates>((state) => state.ociReducer.config.prereq) as string;
 
     useEffect(() => {
-        if (auth != '') {
+        if (token != '') {
             if (id !== '0') {
                 //Load data for selected album
                 fetchSampleData(id as string);
@@ -34,7 +34,7 @@ const SampleView: React.FC = () => {
         } else {
             navigate(routes.LOGIN);
         }
-    }, [auth]);
+    }, [token]);
 
     useEffect(() => {
         if (playerRef.current && dataFetched) {

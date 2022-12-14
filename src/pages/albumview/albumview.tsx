@@ -23,7 +23,7 @@ const AlbumView: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [albumData, setAlbumData] = useState<any>(null);
     const [dataFetched, setDataFetched] = useState(false);
-    const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
+    const token = window.sessionStorage.getItem('token');
     const navigate = useNavigate();
     const searchbarRef = createRef<any>();
     const playerRef = createRef<any>();
@@ -31,7 +31,7 @@ const AlbumView: React.FC = () => {
     const preauthreq = useSelector<CombinedStates>((state) => state.ociReducer.config.prereq) as string;
 
     useEffect(() => {
-        if (auth != '') {
+        if (token != null) {
             if (id !== '0') {
                 //Load data for selected album
                 fetchAlbumData(id as string);
@@ -39,7 +39,7 @@ const AlbumView: React.FC = () => {
         } else {
             navigate(routes.LOGIN);
         }
-    }, [auth]);
+    }, [token]);
 
     useEffect(() => {
         if (dataFetched) {
@@ -51,7 +51,7 @@ const AlbumView: React.FC = () => {
         try {
             appendLoading();
             //Fetch all album data
-            const album = await getAlbum(auth, id);
+            const album = await getAlbum(id);
             console.log(album);
             setDataFetched(true);
             setAlbumData(album);

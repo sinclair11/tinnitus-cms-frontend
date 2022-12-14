@@ -12,19 +12,19 @@ import { Icons } from '@utils/icons';
 import { routes } from '@src/router/routes';
 
 const SampleList: React.FC = () => {
-    const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
+    const token = window.sessionStorage.getItem('token');
     const navigate = useNavigate();
     const { appendLoading, removeLoading } = useLoading();
     const searchbarRef = useRef<any>(null);
     const [samples, setSamples] = React.useState<SampleInfo[]>([]);
 
     useEffect(() => {
-        if (auth != '') {
+        if (token != '') {
             fetchSamples();
         } else {
             navigate(routes.LOGIN);
         }
-    }, [auth]);
+    }, [token]);
 
     async function fetchSamples(): Promise<void> {
         //Fetch all samples

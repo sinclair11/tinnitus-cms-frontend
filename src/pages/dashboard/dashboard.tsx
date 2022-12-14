@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { CombinedStates } from '@store/reducers/custom';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '@src/router/routes';
 import Sidebar from '@components/sidebar/sidebar';
@@ -17,19 +16,19 @@ const Dashboard: React.FC = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { appendLoading, removeLoading } = useLoading();
-    const auth = useSelector<CombinedStates>((state) => state.generalReducer.auth) as any;
     const [loaded, setLoaded] = useState(false);
     const [appStoreSales, setAppStoreSales] = useState(0);
     const [playStoreSales, setPlayStoreSales] = useState(0);
+    const token = window.sessionStorage.getItem('token');
 
     useEffect(() => {
-        if (auth != '') {
+        if (token != null) {
             //Fetch data
             fetchDashboard();
         } else {
             navigate(routes.LOGIN);
         }
-    }, [auth]);
+    }, [token]);
 
     async function fetchDashboard(): Promise<void> {
         try {
@@ -50,7 +49,7 @@ const Dashboard: React.FC = () => {
     async function fetchAlbums(): Promise<void> {
         dispatch({
             type: 'album/setAlbums',
-            payload: await getAlbums(auth),
+            payload: await getAlbums(),
         });
     }
 
@@ -69,7 +68,7 @@ const Dashboard: React.FC = () => {
     }
 
     async function fetchCategories(): Promise<void> {
-        const categories = await getCategories(auth, 'all');
+        const categories = await getCategories('all');
         console.log(categories);
 
         dispatch({

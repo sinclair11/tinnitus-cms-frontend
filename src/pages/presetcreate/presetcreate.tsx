@@ -12,17 +12,17 @@ const PresetCreate: React.FC = () => {
     const categories = useSelector<CombinedStates>(
         (state: CombinedStates) => state.presetReducer.categories,
     ) as Category[];
-    const auth = useSelector<CombinedStates>((state: CombinedStates) => state.generalReducer.auth) as any;
+    const token = window.sessionStorage.getItem('token');
     const formRef = useRef<any>(null);
     const content = useRef<any>(null);
 
     useEffect(() => {
-        if (auth != '') {
+        if (token != '') {
             //Done loading
         } else {
             navigate(routes.LOGIN);
         }
-    }, [auth]);
+    }, [token]);
 
     function displayContent(): JSX.Element {
         if (categories.length > 0) {
