@@ -1,37 +1,32 @@
 import { AlbumFormData, SongData, AlbumInfo } from '@src/types/album';
 import axios from 'axios';
 
-export async function getAlbums(auth: string): Promise<AlbumInfo[]> {
+export async function getAlbums(): Promise<AlbumInfo[]> {
     try {
         return await (
-            await axios.get('http://localhost:8080/api/admin/albums', {
-                headers: { Authorization: `Bearer ${auth}` },
-            })
+            await axios.get('http://localhost:8080/api/admin/albums', {})
         ).data;
     } catch (error) {
         throw error;
     }
 }
 
-export async function getAlbum(auth: string, id: string): Promise<AlbumInfo> {
+export async function getAlbum(id: string): Promise<AlbumInfo> {
     try {
         return await (
-            await axios.get(`http://localhost:8080/api/admin/albums/album?id=${id}`, {
-                headers: { Authorization: `Bearer ${auth}` },
-            })
+            await axios.get(`http://localhost:8080/api/admin/albums/album?id=${id}`, {})
         ).data;
     } catch (error) {
         throw error;
     }
 }
 
-export async function uploadAlbumInfo(auth: string, album: AlbumInfo): Promise<string> {
+export async function uploadAlbumInfo(album: AlbumInfo): Promise<string> {
     try {
         const response = await axios({
             method: 'POST',
             url: 'http://localhost:8080/api/admin/albums',
             data: album,
-            headers: { Authorization: `Bearer ${auth}` },
         });
 
         return response.data;
@@ -41,7 +36,7 @@ export async function uploadAlbumInfo(auth: string, album: AlbumInfo): Promise<s
 }
 
 export async function uploadAlbumFile(file: any): Promise<string> {
-
+    return '';
 }
 
 export async function editAlbumData(id: string, info: AlbumFormData, tableData: SongData[]): Promise<string> {
