@@ -4,6 +4,7 @@ import logo from '@src/icons/logo.png';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
+import { refreshToken } from '@services/general-services';
 
 const Login: React.FC = () => {
     const dispatch = useDispatch();
@@ -33,42 +34,41 @@ const Login: React.FC = () => {
         if (isValid === 0) {
             //Send authentication request
             try {
-                try {
-                    const response = await axios.post(
-                        'http://127.0.0.1:8080/login',
-                        {},
-                        {
-                            auth: {
-                                username: admin,
-                                password: passw,
-                            },
+                const response = await axios.post(
+                    'http://127.0.0.1:8080/login',
+                    {},
+                    {
+                        auth: {
+                            username: admin,
+                            password: passw,
                         },
-                    );
-                    console.log(response.data);
-                    //Store JWT
+                    },
+                );
+                const token = response.data.token;
+                //Store JWT
+                window.sessionStorage.setItem('token', JSON.stringify(token));
+                //Store pre-authenticated request for object storage
+                dispatch({
+                    type: 'oci/config',
+                    payload: {
+                        prereq: response.data.preauthreq,
+                    },
+                });
+                //Set timer to refresh token
+                window.setTimeout(async (): Promise<void> => {
+                    const response = await refreshToken(token.value);
                     dispatch({
                         type: 'general/auth',
-                        payload: response.data.token,
+                        payload: response.data,
                     });
-                    //Store pre-authenticated request for object storage
-                    dispatch({
-                        type: 'oci/config',
-                        payload: {
-                            prereq: response.data.preauthreq,
-                        },
-                    });
-                    setAdmin('');
-                    setPassw('');
-                    navigate('/');
-                } catch {
-                    setAdmin('');
-                    setPassw('');
-                    alert('Unauthorized Access');
-                }
-            } catch (error: any) {
+                }, token.expiration - 1000 * 60);
                 setAdmin('');
                 setPassw('');
-                alert(error.message);
+                navigate('/');
+            } catch {
+                setAdmin('');
+                setPassw('');
+                alert('Unauthorized access');
             }
         } else {
             /*Do nothing*/
