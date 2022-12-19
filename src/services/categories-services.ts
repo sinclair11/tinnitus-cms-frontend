@@ -10,10 +10,8 @@ export async function insertCategory(form: any): Promise<string> {
         });
         return response.data;
     } catch (error: any) {
-        alert(error);
+        throw error;
     }
-
-    return 'Could not add category';
 }
 
 export async function getCategories(which: string): Promise<any> {
