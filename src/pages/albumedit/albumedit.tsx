@@ -1,22 +1,19 @@
 import AlbumForm from '@components/albumform/albumform';
 import Artwork from '@components/artwork/artwork';
 import Sidebar from '@components/sidebar/sidebar';
-import { CombinedStates } from '@src/store/reducers/custom';
 import React, { createRef, useEffect, useRef, useState } from 'react';
 import { Table } from '@components/table/table';
-import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AlbumInfo } from '@src/types/album';
-import { editAlbumData } from '@src/services/album-services';
+import { editAlbumData, getAlbum } from '@src/services/album-services';
 import { useLoading } from '@pages/loading/loading';
-import { createObjectStoragePath } from '@src/utils/helpers';
 import { routes } from '@src/router/routes';
+import { Endpoints } from '@src/constants';
+import { AlbumEditInfo } from '@src/types/album';
 
 const AlbumEdit: React.FC = () => {
     const { appendLoading, removeLoading } = useLoading();
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const preauthreq = useSelector<CombinedStates>((state) => state.ociReducer.config.prereq) as string;
     const tableRef = createRef<any>();
     const formRef = createRef<any>();
     const artworkRef = createRef<any>();
@@ -38,16 +35,15 @@ const AlbumEdit: React.FC = () => {
     async function fetchAlbumData(): Promise<void> {
         try {
             appendLoading();
-            // const docRef = await getDoc(doc(db, 'albums', id as string));
-            // albumData.current = docRef.data() as AlbumInfo;
-            // albumData.current.artwork = createObjectStoragePath(preauthreq, ['albums', id!, `artwork.jpeg`]);
-            // formData.current = {
-            //     name: albumData.current.name,
-            //     description: albumData.current.description,
-            //     tags: albumData.current.tags,
-            //     length: albumData.current.length,
-            //     category: albumData.current.category,
-            // };
+            albumData.current = await getAlbum(id!);
+            albumData.current.artwork = `${Endpoints.API_ALBUM_GET_ARTWORK}/${id}/artwork.jpg`;
+            formData.current = {
+                name: albumData.current.name,
+                description: albumData.current.description,
+                tags: albumData.current.tags,
+                length: albumData.current.length,
+                category: albumData.current.category,
+            };
             //Done fetching data
             setLoaded(true);
             removeLoading();
@@ -62,9 +58,16 @@ const AlbumEdit: React.FC = () => {
         try {
             const validation = await formRef.current.getInputValidation();
             if (validation) {
-                const album = formRef.current.getData();
-                const songs = tableRef.current.getData();
-                await editAlbumData(id as string, album, songs);
+                const albumForm = formRef.current.getData();
+                const newAlbumData: AlbumEditInfo = {
+                    id: albumData.current.id,
+                    description: albumForm.description,
+                    tags: albumForm.tags,
+                    category: albumForm.category,
+                };
+                const response = await editAlbumData(newAlbumData);
+
+                alert(response);
             }
         } catch (error: any) {}
     }
