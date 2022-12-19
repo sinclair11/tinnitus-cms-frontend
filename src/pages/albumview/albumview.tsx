@@ -2,8 +2,6 @@ import React, { createRef, useEffect, useRef, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import SearchBar from '@src/components/searchbar/searchbar';
 import Toolbar from '@src/components/toolbar/toolbar';
-import { useSelector } from 'react-redux';
-import { CombinedStates } from '@src/store/reducers/custom';
 import Sidebar from '@components/sidebar/sidebar';
 import { useNavigate, useParams } from 'react-router-dom';
 import Artwork from '@components/artwork/artwork';
@@ -14,9 +12,9 @@ import { Table } from '@components/table/table';
 import { Icons } from '@src/utils/icons';
 import Player from '@components/player/player';
 import { useLoading } from '@pages/loading/loading';
-import { createObjectStoragePath } from '@src/utils/helpers';
 import { routes } from '@src/router/routes';
 import { getAlbum } from '@services/album-services';
+import { Endpoints } from '@src/constants';
 
 const AlbumView: React.FC = () => {
     const { appendLoading, removeLoading } = useLoading();
@@ -28,7 +26,7 @@ const AlbumView: React.FC = () => {
     const searchbarRef = createRef<any>();
     const playerRef = createRef<any>();
     const container = useRef(null);
-    const preauthreq = useSelector<CombinedStates>((state) => state.ociReducer.config.prereq) as string;
+    const artworkRef = useRef('');
 
     useEffect(() => {
         if (token != null) {
@@ -52,22 +50,22 @@ const AlbumView: React.FC = () => {
             appendLoading();
             //Fetch all album data
             const album = await getAlbum(id);
+            album.uploadDate = new Date(Date.parse(album.uploadDate)).toLocaleString();
             console.log(album);
             setDataFetched(true);
             setAlbumData(album);
-            // data.artwork = createObjectStoragePath(preauthreq, ['albums', id, `artwork.jpeg`]);
-            // data.upload_date = data.upload_date.toDate().toDateString();
+            artworkRef.current = `${Endpoints.API_ALBUM_GET_ARTWORK}/${id}/artwork.jpg`;
             //Loading is done
             removeLoading();
-        } catch (error) {
-            //! Undefined behaviour on error handling
+        } catch (error: any) {
+            alert(error.message);
             removeLoading();
         }
     }
 
     async function getSongUrl(song: SongData): Promise<void> {
         try {
-            playerRef.current.setSong(createObjectStoragePath(preauthreq, ['albums', id!, `${song.name}.wav`]));
+            playerRef.current.setSong(`${Endpoints.API_ALBUM_GET_AUDIO}/${id}/${song.name}.mp3`);
         } catch (error) {
             throw error;
         }
@@ -90,12 +88,12 @@ const AlbumView: React.FC = () => {
                                 edit={`/album/edit/${id}`}
                                 reviews={`/album/reviews/${id}`}
                                 categories={routes.ALBUM_CATEGORIES}
-                                return={routes.SAMPLE_LIST}
+                                return={routes.ALBUM_LIST}
                                 delete="album"
                             />
                             <div className="section-album-content">
                                 <div>
-                                    <Artwork type="view" img={albumData.artwork} />
+                                    <Artwork type="view" img={artworkRef.current} />
                                     <Player ref={playerRef} />
                                 </div>
                                 <AlbumInfoView data={albumData} />

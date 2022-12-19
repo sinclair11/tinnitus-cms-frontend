@@ -7,18 +7,15 @@ import { CombinedStates } from '@src/store/reducers/custom';
 import ProgressbarUpload from '@components/progressbar/progressbar-upload';
 import AlbumForm from '@src/components/albumform/albumform';
 import Artwork from '@components/artwork/artwork';
-import { deleteAlbum, uploadAlbumInfo } from '@src/services/album-services';
+import { deleteAlbum, uploadAlbumArtowrk, uploadAlbumFile, uploadAlbumInfo } from '@src/services/album-services';
 import axios from 'axios';
 import { SongData } from '@src/types/album';
-import { createObjectStoragePath } from '@src/utils/helpers';
 import { Category } from '@src/types/general';
 import { routes } from '@src/router/routes';
 
 const AlbumCreate: React.FC = () => {
     const navigate = useNavigate();
-    const preauthreq = useSelector<CombinedStates>((state) => state.ociReducer.config.prereq) as string;
     const categories = useSelector<CombinedStates>((state) => state.albumReducer.categories) as Category[];
-    const filesUploaded = useRef<any>([]);
     const tableRef = createRef<any>();
     const formRef = createRef<any>();
     const artworkRef = createRef<any>();
@@ -54,103 +51,70 @@ const AlbumCreate: React.FC = () => {
         progressbarRef.current.logMessage(type, message);
     }
 
-    async function registerAlbumInDb(): Promise<boolean> {
-        const formValidation = await formRef.current.getInputValidation();
-        const tableValidation = await tableRef.current.getInputValidation();
-        if (formValidation && tableValidation) {
-            const form = new FormData();
-            const albumDataCopy = formRef.current.getData();
-            albumDataCopy.likes = 0;
-            albumDataCopy.favorites = 0;
-            albumDataCopy.reviews = 0;
-            const tableDataCopy = tableRef.current.getData();
-            for (const entry of tableDataCopy) {
-                delete entry.file;
-            }
-            albumDataCopy.totalSongs = tableDataCopy.length;
-            albumDataCopy.songs = tableDataCopy;
-            const response = await uploadAlbumInfo(albumDataCopy);
-            alert(response);
-            // TODO: Send data to server
-            return true;
-        } else {
-            return false;
+    async function registerAlbumInDb(): Promise<string> {
+        const albumDataCopy = formRef.current.getData();
+        albumDataCopy.likes = 0;
+        albumDataCopy.favorites = 0;
+        albumDataCopy.reviews = 0;
+        const tableData: SongData[] = tableRef.current.getData();
+        const tableDataCopy: SongData[] = [];
+        for (const entry of tableData) {
+            const obj: SongData = {
+                name: entry.name,
+                position: entry.position,
+                length: entry.length,
+                category: entry.category,
+                favorites: entry.favorites,
+                likes: entry.likes,
+                views: entry.views,
+            };
+
+            tableDataCopy.push(obj);
         }
+        albumDataCopy.totalSongs = tableDataCopy.length;
+        albumDataCopy.songs = tableDataCopy;
+        const response = await uploadAlbumInfo(albumDataCopy);
+
+        return response;
     }
 
     async function onUpload(): Promise<void> {
-        const result = await registerAlbumInDb();
-        //Verify if all inputs are valid
-        const formValidation = await formRef.current.getInputValidation();
-        const artworkValidation = await artworkRef.current.getInputValidation();
-        const tableValidation = await tableRef.current.getInputValidation();
-        // if (formValidation && artworkValidation && tableValidation) {
-        //     //Reset list of uploaded files
-        //     filesUploaded.current = [];
-        //     // const docRef = doc(collection(db, 'albums'));
-
-        //     try {
-        //         let progress = 10;
-        //         //Initialize progress bar and start uploading
-        //         progressbarRef.current.enable(true);
-        //         updateProgress(progress, 'info', 'Uploading album...');
-        //         //Upload album songs to OCI storage
-        //         const tableData: SongData[] = tableRef.current.getData();
-        //         const step = Math.floor(80 / tableData.length);
-        //         for (const song of tableData) {
-        //             filesUploaded.current.push(`${song.name}.wav`);
-        //             const songToUpload = {
-        //                 album: docRef.id,
-        //                 name: song.name,
-        //                 filePath: song.file,
-        //             };
-        //             const urlPath = createObjectStoragePath(preauthreq, [
-        //                 'albums',
-        //                 songToUpload.album,
-        //                 `${songToUpload.name}.wav`,
-        //             ]);
-        //             const res = (await invoke('upload_file', {
-        //                 name: song.name,
-        //                 path: urlPath,
-        //                 file: song.file,
-        //             })) as any;
-        //             if (res[0]) {
-        //                 updateProgress((progress += step), 'success', `Album song ${song.name} uploaded successfully`);
-        //             } else {
-        //                 throw new Error(res[1]);
-        //             }
-        //         }
-        //         //Upload album artwork to OCI storage
-        //         const artwork = artworkRef.current.getData() as string;
-        //         const artworkToUpload = {
-        //             album: docRef.id,
-        //             filePath: artwork,
-        //         };
-        //         const urlPath = createObjectStoragePath(preauthreq, ['albums', artworkToUpload.album, `artwork.jpeg`]);
-        //         let res = (await invoke('upload_file', {
-        //             name: 'cover art',
-        //             path: urlPath,
-        //             file: artworkToUpload.filePath,
-        //         })) as any;
-        //         if (res[0]) {
-        //             updateProgress(95, 'success', 'Album cover art uploaded successfully');
-        //         } else {
-        //             throw new Error(res[1]);
-        //         }
-        //         //Register album in database
-        //         const albumData = formRef.current.getData();
-        //         res = await uploadAlbumInfo(docRef.id, albumData, tableData);
-        //         updateProgress(100, 'success', res);
-        //         progressbarRef.current.logMessage('info', 'All album data uploaded successfully!');
-        //         //Clear all states to avoid uploading the same album again
-        //         clearChildrenStates();
-        //     } catch (error: any) {
-        //         deleteAlbum(docRef.id);
-        //         progressbarRef.current.operationFailed(error.message);
-        //         //Create a new cancel token
-        //         cancelSource.current = axios.CancelToken.source();
-        //     }
-        // }
+        let id = '';
+        try {
+            let progress = 10;
+            //Verify if all inputs are valid
+            const formValidation = await formRef.current.getInputValidation();
+            const artworkValidation = await artworkRef.current.getInputValidation();
+            const tableValidation = await tableRef.current.getInputValidation();
+            if (formValidation && artworkValidation && tableValidation) {
+                progressbarRef.current.enable(true);
+                updateProgress(progress, 'info', 'Uploading album...');
+                updateProgress(progress, 'success', 'Album registered in database');
+                id = await registerAlbumInDb();
+                const songsData: Array<SongData> = tableRef.current.getData();
+                const step = Math.floor(80 / songsData.length);
+                for (const song of songsData) {
+                    const form = new FormData();
+                    const extension = song.file?.name.split('.').pop();
+                    form.append('id', id);
+                    form.append('name', song.name + '.' + extension);
+                    form.append('file', song.file!);
+                    await uploadAlbumFile(form);
+                    updateProgress((progress += step), 'success', `Album song ${song.name} uploaded successfully`);
+                }
+                const form = new FormData();
+                form.append('id', id);
+                form.append('name', 'artwork.jpg');
+                form.append('file', artworkRef.current.getData());
+                const result = await uploadAlbumArtowrk(form);
+                updateProgress(100, 'success', result);
+                progressbarRef.current.logMessage('info', 'All album data uploaded successfully!');
+                clearChildrenStates();
+            }
+        } catch (error: any) {
+            progressbarRef.current.operationFailed(error.message);
+            deleteAlbum(id);
+        }
     }
 
     function displayContent(): JSX.Element {

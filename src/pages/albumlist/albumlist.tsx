@@ -11,6 +11,7 @@ import { Container } from 'react-bootstrap';
 import { Icons } from '@src/utils/icons';
 import { createObjectStoragePath } from '@src/utils/helpers';
 import { routes } from '@src/router/routes';
+import { Endpoints } from '@src/constants';
 
 const AlbumList: React.FC = () => {
     const navigate = useNavigate();
@@ -122,13 +123,16 @@ const AlbumsTable: React.FC<AlbumTableProps> = (props: AlbumTableProps) => {
                             <tr key={`${i}`} id={`${i}`} onClick={(): void => onAlbumClick(row.id)}>
                                 <td>{i + 1}</td>
                                 <td>
-                                    <img src={row.artwork} alt="albums-cover" />
+                                    <img
+                                        src={`${Endpoints.API_ALBUM_GET_ARTWORK}/${row.id}/artwork.jpg`}
+                                        alt="albums-cover"
+                                    />
                                 </td>
                                 <td>
                                     <p>{row.name}</p>
                                 </td>
                                 <td>
-                                    <p>{row.uploadDate}</p>
+                                    <p>{new Date(Date.parse(row.uploadDate)).toLocaleString()}</p>
                                 </td>
                                 <td>
                                     <p>{row.songs.length}</p>

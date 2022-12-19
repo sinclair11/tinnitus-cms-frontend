@@ -1,10 +1,11 @@
-import React, { forwardRef, useImperativeHandle } from 'react';
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToolbarIcons } from '@utils/icons';
 import ReactTooltip from 'react-tooltip';
 import { deleteAlbum } from '@src/services/album-services';
 import { useLoading } from '@pages/loading/loading';
 import { deleteSample } from '@services/sample-services';
+import { DialogBox } from '@components/dialogbox/dialogbox';
 
 type ToolbarProps = {
     container?: string;
@@ -20,6 +21,7 @@ type ToolbarProps = {
 const Toolbar = forwardRef((props: ToolbarProps, ref?: any) => {
     const { appendLoading, removeLoading } = useLoading();
     const navigate = useNavigate();
+    const [isOpen, setIsOpen] = useState(false);
 
     useImperativeHandle(ref, () => ({
         //
@@ -41,20 +43,21 @@ const Toolbar = forwardRef((props: ToolbarProps, ref?: any) => {
         navigate(props.upload);
     }
 
-    async function onRequestDeleteClick(): Promise<void> {
-        if (false) {
+    async function deleteItem(): Promise<void> {
+        if (props.itemId) {
             try {
                 //Activate loading screen
                 if (props.itemId !== undefined) {
                     appendLoading();
+                    let response = '';
                     //Delete resource from storage and database
                     switch (props.delete) {
                         case 'album': {
-                            await deleteAlbum(props.itemId);
+                            response = await deleteAlbum(props.itemId);
                             break;
                         }
                         case 'sample': {
-                            await deleteSample(props.itemId);
+                            // await deleteSample(props.itemId);
                             break;
                         }
                         case 'preset': {
@@ -64,6 +67,7 @@ const Toolbar = forwardRef((props: ToolbarProps, ref?: any) => {
                         }
                     }
                     removeLoading();
+                    alert(response);
                     navigate(props.return);
                 }
             } catch (error: any) {
@@ -71,6 +75,10 @@ const Toolbar = forwardRef((props: ToolbarProps, ref?: any) => {
                 removeLoading();
             }
         }
+    }
+
+    function onDeleteClick(): void {
+        setIsOpen(true);
     }
 
     return (
@@ -84,7 +92,7 @@ const Toolbar = forwardRef((props: ToolbarProps, ref?: any) => {
                 <img src={ToolbarIcons.EditIcon} className="ActionIcon" />
                 <p>Edit</p>
             </div>
-            <div className="toolbar-action" onClick={onRequestDeleteClick}>
+            <div className="toolbar-action" onClick={onDeleteClick}>
                 <img src={ToolbarIcons.DeleteIcon} className="ActionIcon" />
                 <p>Delete</p>
             </div>
@@ -96,6 +104,12 @@ const Toolbar = forwardRef((props: ToolbarProps, ref?: any) => {
                 <img src={ToolbarIcons.Categories} className="ActionIcon" />
                 <p>Categories</p>
             </div>
+            <DialogBox
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                message="Do you want to delete this asset ?"
+                execute={deleteItem}
+            />
         </div>
     );
 });

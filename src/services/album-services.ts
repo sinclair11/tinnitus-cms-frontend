@@ -1,10 +1,11 @@
-import { AlbumFormData, SongData, AlbumInfo } from '@src/types/album';
+import { AlbumFormData, SongData, AlbumInfo, AlbumEditInfo } from '@src/types/album';
 import axios from 'axios';
+import { Endpoints } from '@src/constants';
 
 export async function getAlbums(): Promise<AlbumInfo[]> {
     try {
         return await (
-            await axios.get('http://localhost:8080/api/admin/albums', {})
+            await axios.get(Endpoints.API_GET_ALBUMS, {})
         ).data;
     } catch (error) {
         throw error;
@@ -14,7 +15,7 @@ export async function getAlbums(): Promise<AlbumInfo[]> {
 export async function getAlbum(id: string): Promise<AlbumInfo> {
     try {
         return await (
-            await axios.get(`http://localhost:8080/api/admin/albums/album?id=${id}`, {})
+            await axios.get(`${Endpoints.API_ALBUM}/${id}`, {})
         ).data;
     } catch (error) {
         throw error;
@@ -25,7 +26,7 @@ export async function uploadAlbumInfo(album: AlbumInfo): Promise<string> {
     try {
         const response = await axios({
             method: 'POST',
-            url: 'http://localhost:8080/api/admin/albums',
+            url: Endpoints.API_ALBUM,
             data: album,
         });
 
@@ -35,40 +36,67 @@ export async function uploadAlbumInfo(album: AlbumInfo): Promise<string> {
     }
 }
 
-export async function uploadAlbumFile(file: any): Promise<string> {
-    return '';
+export async function uploadAlbumFile(form: FormData): Promise<string> {
+    try {
+        const response = await axios({
+            method: 'POST',
+            url: Endpoints.API_ALBUM_POST_AUDIO,
+            data: form,
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        return response.data;
+    } catch (error: any) {
+        throw error;
+    }
 }
 
-export async function editAlbumData(id: string, info: AlbumFormData, tableData: SongData[]): Promise<string> {
+export async function uploadAlbumArtowrk(form: FormData): Promise<string> {
     try {
-        // const albumDocRef = doc(db, 'albums', id);
-        // await setDoc(
-        //     albumDocRef,
-        //     {
-        //         name: info.name,
-        //         description: info.description,
-        //         tags: info.tags,
-        //         category: info.category,
-        //         length: info.length,
-        //         songs: tableData,
-        //     },
-        //     { merge: true },
-        // );
-        return 'Album updated in database';
+        const response = await axios({
+            method: 'POST',
+            url: Endpoints.API_ALBUM_POST_ARTWORK,
+            data: form,
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        return response.data;
+    } catch (error: any) {
+        throw error;
+    }
+}
+
+export async function getAlbumFile(id: string, name: string): Promise<any> {
+    try {
+        const response = await axios({
+            method: 'GET',
+            url: `${Endpoints.API_ALBUM_GET_AUDIO}/${id}/${name}`,
+        });
+
+        return response;
+    } catch (error: any) {
+        throw error;
+    }
+}
+
+export async function editAlbumData(albumEdit: AlbumEditInfo): Promise<string> {
+    try {
+        const response = await axios({
+            method: 'PUT',
+            url: Endpoints.API_ALBUM,
+            data: albumEdit,
+        });
+        return response.data;
     } catch (error: any) {
         return error.message;
     }
 }
 
-export async function deleteAlbum(id: string): Promise<{ result: boolean; message: string }> {
+export async function deleteAlbum(id: string): Promise<string> {
     try {
-        //Delete everyting related to this album
-        // await deleteDoc(doc(db, 'albums', id));
-        // //Temporary store in db the id of deleted album
-        // await updateDoc(doc(db, 'misc', 'albums'), {
-        //     deleted_albums: arrayUnion(id),
-        // });
-        return { result: true, message: 'Album deleted' };
+        const response = await axios.delete(`${Endpoints.API_ALBUM}/${id}`);
+
+        return response.data;
     } catch (error) {
         throw error;
     }

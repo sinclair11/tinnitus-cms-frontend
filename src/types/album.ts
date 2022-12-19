@@ -1,5 +1,5 @@
 export type SongData = {
-    file?: string;
+    file?: File;
     name: string;
     position: string | number;
     length: string;
@@ -32,6 +32,13 @@ export type AlbumInfo = {
     totalSongs: number;
     favorites: number;
     songs: Array<SongData>;
+};
+
+export type AlbumEditInfo = {
+    id: string;
+    description: string;
+    tags: string[];
+    category: string;
 };
 
 export type ReviewData = {
