@@ -143,9 +143,9 @@ export const Table = forwardRef((props: TableProps, ref: any) => {
     }
 
     function displayCategory(type: string, id: number, category?: string): any {
-        if (type === 'view') {
+        if (type === 'view' || type === 'edit') {
             return <p>{category}</p>;
-        } else if (type === 'create' || type === 'edit') {
+        } else if (type === 'create') {
             return (
                 <Dropdown
                     id={`row-category-${id}`}
@@ -178,9 +178,10 @@ export const Table = forwardRef((props: TableProps, ref: any) => {
             document.getElementById('table-loading')!.style.display = 'flex';
             if (input.files && input.files.length > 0) {
                 const files = input.files;
-                const temp: any[] = [];
+                const temp: SongData[] = [];
                 let position = tableData.length > 0 ? tableData.length + 1 : 1;
                 for (const file of files) {
+                    console.log(file);
                     const audio = new Audio();
                     audio.src = URL.createObjectURL(file);
                     audio.addEventListener('loadedmetadata', () => {
