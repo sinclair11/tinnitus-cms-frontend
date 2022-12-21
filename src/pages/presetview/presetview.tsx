@@ -1,9 +1,6 @@
 import React, { createRef, useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { useLoading } from '@pages/loading/loading';
-import { CombinedStates } from '@store/reducers/custom';
-import { createObjectStoragePath } from '@utils/helpers';
 import Artwork from '@components/artwork/artwork';
 import Player from '@components/player/player';
 import SearchBar from '@components/searchbar/searchbar';
@@ -12,6 +9,8 @@ import Toolbar from '@components/toolbar/toolbar';
 import { Container } from 'react-bootstrap';
 import PresetInfoView from '@components/presetinfo/presetinfo';
 import { routes } from '@src/router/routes';
+import { getPresetById } from '@services/preset-services';
+import { Endpoints } from '@src/constants';
 
 const PresetView: React.FC = () => {
     const { appendLoading, removeLoading } = useLoading();
@@ -23,7 +22,6 @@ const PresetView: React.FC = () => {
     const searchbarRef = createRef<any>();
     const playerRef = useRef<any>(null);
     const container = useRef(null);
-    const preauthreq = useSelector<CombinedStates>((state) => state.ociReducer.config.prereq) as string;
 
     useEffect(() => {
         if (token != '') {
@@ -46,22 +44,20 @@ const PresetView: React.FC = () => {
         try {
             appendLoading();
             //Fetch all preset data
-            // const docRef = doc(collection(db, 'presets'), id);
-            // const docRes = await getDoc(docRef);
-            // const data = docRes.data()!;
-            // data.artwork = createObjectStoragePath(preauthreq, ['presets', id, `preview.jpeg`]);
-            // data.upload_date = data.upload_date.toDate().toDateString();
-            // setPresetData(data);
-            //Loading is done
+            const preset = await getPresetById(id);
+            preset.uploadDate = new Date(Date.parse(preset.uploadDate)).toLocaleString();
+            setPresetData(preset);
             setDataFetched(true);
+            //Loading is done
             removeLoading();
-        } catch (error) {
-            //! Undefined behaviour on error handling
+        } catch (error: any) {
+            alert(error.message);
+            removeLoading();
         }
     }
 
     async function getAudioFile(name: string): Promise<void> {
-        playerRef.current.setSong(createObjectStoragePath(preauthreq, ['presets', id!, `${name}.wav`]));
+        playerRef.current.setSong(`${Endpoints.API_PRESET_GET_AUDIO}/${id}/${name}.mp3`);
     }
 
     function displayPage(): JSX.Element {
@@ -91,7 +87,11 @@ const PresetView: React.FC = () => {
                             />
                             <div className="section-album-content">
                                 <div>
-                                    <Artwork type="view" className="preset-preview-image" img={presetData.artwork} />
+                                    <Artwork
+                                        type="view"
+                                        className="preset-preview-image"
+                                        img={`${Endpoints.API_PRESET_GET_ARTWORK}/${id}/artwork.jpg`}
+                                    />
                                 </div>
                                 <div className="preset-info-player">
                                     <PresetInfoView data={presetData} />

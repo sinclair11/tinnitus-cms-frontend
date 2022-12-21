@@ -8,6 +8,7 @@ import { getPresets } from '@services/preset-services';
 import { PresetInfo } from '@src/types/preset';
 import { Icons } from '@utils/icons';
 import { routes } from '@src/router/routes';
+import { Endpoints } from '@src/constants';
 
 const PresetList: React.FC = () => {
     const token = window.sessionStorage.getItem('token');
@@ -96,6 +97,7 @@ const PresetsTable: React.FC<PresetTableProps> = (props: PresetTableProps) => {
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Cover</th>
                     <th>Name</th>
                     <th>Created</th>
                     <th>Duration</th>
@@ -117,13 +119,19 @@ const PresetsTable: React.FC<PresetTableProps> = (props: PresetTableProps) => {
                 {props.presets !== undefined &&
                     props.presets.map((row: PresetInfo, i: number) => {
                         return (
-                            <tr key={`${i}`} id={`${i}`} onClick={(): void => onAlbumClick(row.id)}>
+                            <tr key={`${i}`} id={`${i}`} onClick={(): void => onAlbumClick(row.id!)}>
                                 <td>{i + 1}</td>
+                                <td>
+                                    <img
+                                        src={`${Endpoints.API_PRESET_GET_ARTWORK}/${row.id}/artwork.jpg`}
+                                        alt="Preset Cover"
+                                    />
+                                </td>
                                 <td>
                                     <p>{row.name}</p>
                                 </td>
                                 <td>
-                                    <p>{row.upload_date.toDate().toDateString()}</p>
+                                    <p>{new Date(Date.parse(row.uploadDate)).toLocaleString()}</p>
                                 </td>
                                 <td>
                                     <p>{row.length}</p>

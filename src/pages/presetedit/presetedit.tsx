@@ -4,6 +4,7 @@ import { routes } from '@src/router/routes';
 import { useLoading } from '@pages/loading/loading';
 import Sidebar from '@components/sidebar/sidebar';
 import PresetForm from '@components/presetform/presetform';
+import { getPresetById } from '@services/preset-services';
 
 const PresetEdit: React.FC = () => {
     const token = window.sessionStorage.getItem('token');
@@ -25,8 +26,7 @@ const PresetEdit: React.FC = () => {
     async function fetchPresetData(): Promise<void> {
         try {
             appendLoading();
-            // const docRef = await getDoc(doc(db, 'presets', id as string));
-            // presetData.current = docRef.data() as PresetInfo;
+            presetData.current = await getPresetById(id!);
             //Done fetching data
             setLoaded(true);
             removeLoading();
