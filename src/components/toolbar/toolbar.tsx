@@ -4,8 +4,8 @@ import { ToolbarIcons } from '@utils/icons';
 import ReactTooltip from 'react-tooltip';
 import { deleteAlbum } from '@src/services/album-services';
 import { useLoading } from '@pages/loading/loading';
-import { deleteSample } from '@services/sample-services';
 import { DialogBox } from '@components/dialogbox/dialogbox';
+import { deletePreset } from '@services/preset-services';
 
 type ToolbarProps = {
     container?: string;
@@ -61,8 +61,7 @@ const Toolbar = forwardRef((props: ToolbarProps, ref?: any) => {
                             break;
                         }
                         case 'preset': {
-                            // TODO: Add service to delete preset item
-                            // await deletePreset(props.itemId);
+                            response = await deletePreset(props.itemId);
                             break;
                         }
                     }
@@ -78,7 +77,9 @@ const Toolbar = forwardRef((props: ToolbarProps, ref?: any) => {
     }
 
     function onDeleteClick(): void {
-        setIsOpen(true);
+        if (confirm('Are you sure you want to delete this resource ?')) {
+            deleteItem();
+        }
     }
 
     return (
