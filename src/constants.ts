@@ -14,4 +14,10 @@ export const Endpoints = {
     API_PRESET_POST_ARTWORK: `http://${host}/api/admin/preset/artwork`,
     API_PRESET_GET_AUDIO: `http://${host}/api/admin/preset/assets/audio`,
     API_PRESET_GET_ARTWORK: `http://${host}/api/admin/preset/assets/artwork`,
+    API_GET_SAMPLES: `http://${host}/api/admin/samples`,
+    API_SAMPLE: `http://${host}/api/admin/sample`,
+    API_SAMPLE_POST_AUDIO: `http://${host}/api/admin/sample/audio`,
+    API_SAMPLE_POST_ARTWORK: `http://${host}/api/admin/sample/artwork`,
+    API_SAMPLE_GET_AUDIO: `http://${host}/api/admin/sample/assets/audio`,
+    API_SAMPLE_GET_ARTWORK: `http://${host}/api/admin/sample/assets/artwork`,
 };
