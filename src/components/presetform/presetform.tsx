@@ -2,7 +2,7 @@ import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } f
 import { PresetFormData } from '@src/types/preset';
 import { useSelector } from 'react-redux';
 import { Category } from '@src/types/general';
-import { createObjectStoragePath, getDurationFormat, parseTags } from '@utils/helpers';
+import { getDurationFormat, parseTags } from '@utils/helpers';
 import { InputGroup, FormControl } from 'react-bootstrap';
 import Dropdown from '@components/dropdown/dropdown';
 import Artwork from '@components/artwork/artwork';
@@ -16,6 +16,7 @@ import {
 } from '@services/preset-services';
 import ProgressbarUpload from '@components/progressbar/progressbar-upload';
 import axios from 'axios';
+import { Endpoints } from '@src/constants';
 
 type FormProps = {
     type: string;
@@ -25,7 +26,6 @@ type FormProps = {
 
 const PresetForm = forwardRef((props: FormProps, ref?: any) => {
     const categories = useSelector<CombinedStates>((state) => state.presetReducer.categories) as Category[];
-    const preauthreq = useSelector<CombinedStates>((state: CombinedStates) => state.ociReducer.config.prereq) as string;
     const [name, setName] = useState('');
     const [nameinvalid, setNameInvalid] = useState('');
     const [description, setDescription] = useState('');
@@ -166,7 +166,8 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
                 category: category,
             };
             try {
-                await editPresetData(formData);
+                const response = await editPresetData(formData);
+                alert(response);
             } catch (error: any) {
                 alert(error.message);
             }
@@ -236,7 +237,7 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
     async function uploadPresetArtworkFile(id: string): Promise<string> {
         const form = new FormData();
         form.append('id', id);
-        form.append('name', 'artworl.jpg');
+        form.append('name', 'artwork.jpg');
         form.append('file', artworkRef.current.getData());
 
         try {
@@ -299,7 +300,7 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
                     type={props.type}
                     className="preset-preview-image"
                     message="Please select a preview image"
-                    img={createObjectStoragePath(preauthreq, ['presets', props.id as string, `preview.jpeg`])}
+                    img={`${Endpoints.API_PRESET_GET_ARTWORK}/${props.id}/artwork.jpg`}
                 />
             </div>
             <div className="inputs-div">
