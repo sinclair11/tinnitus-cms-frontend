@@ -1,57 +1,79 @@
-import { PresetFormData, PresetInfo } from '@src/types/preset';
+import { PresetEditInfo, PresetInfo } from '@src/types/preset';
+import { Endpoints } from '@src/constants';
+import axios from 'axios';
 
 export async function getPresets(): Promise<PresetInfo[]> {
     try {
-        const presets = new Array<PresetInfo>();
-        // const ref = collection(db, 'presets');
-        // const q = await getDocs(ref);
-        // const docs = q.docs;
-        // for (const doc of docs) {
-        //     const preset = doc.data() as PresetInfo;
-        //     preset.id = doc.id;
-        //     presets.push(preset);
-        // }
-        return presets;
+        const response = await axios.get(Endpoints.API_GET_PRESETS);
+
+        return response.data;
     } catch (error) {
         throw error;
     }
 }
 
-export async function uploadPresetInfo(id: string, info: PresetFormData): Promise<string> {
+export async function getPresetById(id: string): Promise<PresetInfo> {
     try {
-        // const presetDocRef = doc(db, 'presets', id);
-        // await setDoc(presetDocRef, {
-        //     name: info.name,
-        //     upload_date: new Date(),
-        //     category: info.category,
-        //     description: info.description,
-        //     tags: info.tags,
-        //     length: info.length,
-        //     likes: 0,
-        //     favorites: 0,
-        //     reviews: 0,
-        //     views: 0,
-        // });
-        return 'Preset registered in database';
+        const response = await axios.get(`${Endpoints.API_PRESET}/${id}`);
+
+        return response.data;
     } catch (error) {
         throw error;
     }
 }
 
-export async function editPresetData(id: string, info: PresetFormData): Promise<string> {
+export async function uploadPresetInfo(info: PresetInfo): Promise<string> {
     try {
-        // const presetDocRef = doc(db, 'presets', id);
-        // await setDoc(
-        //     presetDocRef,
-        //     {
-        //         name: info.name,
-        //         category: info.category,
-        //         description: info.description,
-        //         tags: info.tags,
-        //     },
-        //     { merge: true },
-        // );
-        return 'Preset updated in database';
+        const response = await axios({
+            method: 'POST',
+            url: Endpoints.API_PRESET,
+            data: info,
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function uploadPresetFile(form: FormData): Promise<string> {
+    try {
+        const response = await axios({
+            method: 'POST',
+            url: Endpoints.API_PRESET_POST_AUDIO,
+            headers: { 'Content-Type': 'multipart/form-data' },
+            data: form,
+        });
+
+        return response.data;
+    } catch (error: any) {
+        throw error;
+    }
+}
+
+export async function uploadPresetArtwork(form: FormData): Promise<string> {
+    try {
+        const response = await axios({
+            method: 'POST',
+            url: Endpoints.API_PRESET_POST_ARTWORK,
+            headers: { 'Content-Type': 'multipart/form-data' },
+            data: form,
+        });
+
+        return response.data;
+    } catch (error: any) {
+        throw error;
+    }
+}
+
+export async function editPresetData(info: PresetEditInfo): Promise<string> {
+    try {
+        const response = await axios({
+            method: 'PUT',
+            url: Endpoints.API_PRESET,
+            data: info,
+        });
+
+        return response.data;
     } catch (error) {
         throw error;
     }
@@ -59,13 +81,9 @@ export async function editPresetData(id: string, info: PresetFormData): Promise<
 
 export async function deletePreset(id: string): Promise<string> {
     try {
-        // const presetDocRef = doc(collection(db, 'presets'), id);
-        // await deleteDoc(presetDocRef);
-        // //Temporary store in db the id of deleted album
-        // await updateDoc(doc(db, 'misc', 'presets'), {
-        //     deleted_samples: arrayUnion(id),
-        // });
-        return 'Preset deleted from database';
+        const response = await axios.delete(`${Endpoints.API_PRESET}/${id}`);
+
+        return response.data;
     } catch (error) {
         throw error;
     }
