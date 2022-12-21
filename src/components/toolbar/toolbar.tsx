@@ -5,6 +5,7 @@ import ReactTooltip from 'react-tooltip';
 import { deleteAlbum } from '@src/services/album-services';
 import { useLoading } from '@pages/loading/loading';
 import { deletePreset } from '@services/preset-services';
+import { deleteSample } from '@services/sample-services';
 
 type ToolbarProps = {
     container?: string;
@@ -55,7 +56,7 @@ const Toolbar = forwardRef((props: ToolbarProps, ref?: any) => {
                             break;
                         }
                         case 'sample': {
-                            // await deleteSample(props.itemId);
+                            response = await deleteSample(props.itemId);
                             break;
                         }
                         case 'preset': {

@@ -1,15 +1,14 @@
 import React, { useRef, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import { useLoading } from '@pages/loading/loading';
 import SearchBar from '@components/searchbar/searchbar';
 import Sidebar from '@components/sidebar/sidebar';
-import { CombinedStates } from '@store/reducers/custom';
 import { getSamples } from '@services/sample-services';
 import { SampleInfo } from '@src/types/sample';
 import { Icons } from '@utils/icons';
 import { routes } from '@src/router/routes';
+import { Endpoints } from '@src/constants';
 
 const SampleList: React.FC = () => {
     const token = window.sessionStorage.getItem('token');
@@ -98,6 +97,7 @@ const SamplesTable: React.FC<SampleTableProps> = (props: SampleTableProps) => {
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Cover</th>
                     <th>Name</th>
                     <th>Created</th>
                     <th>Duration</th>
@@ -119,13 +119,19 @@ const SamplesTable: React.FC<SampleTableProps> = (props: SampleTableProps) => {
                 {props.samples !== undefined &&
                     props.samples.map((row: SampleInfo, i: number) => {
                         return (
-                            <tr key={`${i}`} id={`${i}`} onClick={(): void => onAlbumClick(row.id)}>
+                            <tr key={`${i}`} id={`${i}`} onClick={(): void => onAlbumClick(row.id!)}>
                                 <td>{i + 1}</td>
+                                <td>
+                                    <img
+                                        src={`${Endpoints.API_SAMPLE_GET_ARTWORK}/${row.id}/artwork.jpg`}
+                                        alt="Preset Cover"
+                                    />
+                                </td>
                                 <td>
                                     <p>{row.name}</p>
                                 </td>
                                 <td>
-                                    <p>{row.upload_date.toDate().toDateString()}</p>
+                                    <p>{new Date(Date.parse(row.uploadDate)).toLocaleString()}</p>
                                 </td>
                                 <td>
                                     <p>{row.length}</p>
