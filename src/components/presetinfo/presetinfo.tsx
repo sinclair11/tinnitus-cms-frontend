@@ -15,7 +15,7 @@ const PresetInfoView: React.FC<PresetInfoProps> = (props: PresetInfoProps) => {
                     <p>{`Name: ${props.data.name}`}</p>
                     <p>{`Category: ${props.data.category}`}</p>
                     <p>{`Duration: ${props.data.length}`}</p>
-                    <p>{`Upload date: ${props.data.upload_date}`}</p>
+                    <p>{`Upload date: ${props.data.uploadDate}`}</p>
                     <p>{`Tags: ${props.data.tags[0] === '' ? 'N/A' : parseTags('string', props.data.tags)}`}</p>
                 </div>
                 <div className="usage-info">
