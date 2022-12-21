@@ -9,7 +9,7 @@ export type PresetFormData = {
 };
 
 export type PresetInfo = {
-    id: string;
+    id?: string;
     name: string;
     description: string;
     tags: string[];
@@ -17,7 +17,14 @@ export type PresetInfo = {
     category: string;
     likes: number;
     reviews: number;
-    upload_date: any;
+    uploadDate: any;
     favorites: number;
     views: number;
+};
+
+export type PresetEditInfo = {
+    id: string;
+    category: string;
+    description: string;
+    tags: string[];
 };
