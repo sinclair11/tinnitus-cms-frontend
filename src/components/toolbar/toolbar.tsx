@@ -1,10 +1,9 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, useImperativeHandle } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToolbarIcons } from '@utils/icons';
 import ReactTooltip from 'react-tooltip';
 import { deleteAlbum } from '@src/services/album-services';
 import { useLoading } from '@pages/loading/loading';
-import { DialogBox } from '@components/dialogbox/dialogbox';
 import { deletePreset } from '@services/preset-services';
 
 type ToolbarProps = {
@@ -21,7 +20,6 @@ type ToolbarProps = {
 const Toolbar = forwardRef((props: ToolbarProps, ref?: any) => {
     const { appendLoading, removeLoading } = useLoading();
     const navigate = useNavigate();
-    const [isOpen, setIsOpen] = useState(false);
 
     useImperativeHandle(ref, () => ({
         //
@@ -105,12 +103,6 @@ const Toolbar = forwardRef((props: ToolbarProps, ref?: any) => {
                 <img src={ToolbarIcons.Categories} className="ActionIcon" />
                 <p>Categories</p>
             </div>
-            <DialogBox
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-                message="Do you want to delete this asset ?"
-                execute={deleteItem}
-            />
         </div>
     );
 });
