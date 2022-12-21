@@ -108,7 +108,7 @@ const AlbumCreate: React.FC = () => {
                 form.append('file', artworkRef.current.getData());
                 const result = await uploadAlbumArtowrk(form);
                 updateProgress(100, 'success', result);
-                progressbarRef.current.logMessage('info', 'All album data uploaded successfully!');
+                progressbarRef.current.logMessage('info', 'All album data uploaded successfully');
                 clearChildrenStates();
             }
         } catch (error: any) {

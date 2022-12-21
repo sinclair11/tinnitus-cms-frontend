@@ -51,9 +51,8 @@ const AlbumView: React.FC = () => {
             //Fetch all album data
             const album = await getAlbum(id);
             album.uploadDate = new Date(Date.parse(album.uploadDate)).toLocaleString();
-            console.log(album);
-            setDataFetched(true);
             setAlbumData(album);
+            setDataFetched(true);
             artworkRef.current = `${Endpoints.API_ALBUM_GET_ARTWORK}/${id}/artwork.jpg`;
             //Loading is done
             removeLoading();
