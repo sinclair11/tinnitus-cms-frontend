@@ -9,7 +9,7 @@ export type SampleFormData = {
 };
 
 export type SampleInfo = {
-    id: string;
+    id?: string;
     name: string;
     description: string;
     tags: string[];
@@ -17,7 +17,14 @@ export type SampleInfo = {
     category: string;
     likes: number;
     reviews: number;
-    upload_date: any;
+    uploadDate: any;
     favorites: number;
     views: number;
+};
+
+export type SampleInfoEdit = {
+    id: string;
+    description: string;
+    category: string;
+    tags: string[];
 };

@@ -1,71 +1,87 @@
-import { SampleFormData, SampleInfo } from '@src/types/sample';
+import { SampleInfo, SampleInfoEdit } from '@src/types/sample';
+import { Endpoints } from '@src/constants';
+import axios from 'axios';
 
 export async function getSamples(): Promise<SampleInfo[]> {
     try {
-        const samples = new Array<SampleInfo>();
-        // const ref = collection(db, 'samples');
-        // const q = await getDocs(ref);
-        // const docs = q.docs;
-        // for (const doc of docs) {
-        //     const sample = doc.data() as SampleInfo;
-        //     sample.id = doc.id;
-        //     samples.push(sample);
-        // }
-        return samples;
+        const response = await axios.get(Endpoints.API_GET_SAMPLES);
+
+        return response.data;
     } catch (error) {
         throw error;
     }
 }
 
-export async function uploadSampleInfo(id: string, info: SampleFormData): Promise<string> {
+export async function getSampleById(id: string): Promise<SampleInfo> {
     try {
-        // const sampleDocRef = doc(db, 'samples', id);
-        // await setDoc(sampleDocRef, {
-        //     name: info.name,
-        //     upload_date: new Date(),
-        //     category: info.category,
-        //     description: info.description,
-        //     tags: info.tags,
-        //     length: info.length,
-        //     likes: 0,
-        //     favorites: 0,
-        //     reviews: 0,
-        //     views: 0,
-        // });
-        return 'Sample registered in database';
+        const response = await axios.get(`${Endpoints.API_SAMPLE}/${id}`);
+
+        return response.data;
     } catch (error) {
         throw error;
     }
 }
 
-export async function editSampleData(id: string, info: SampleFormData): Promise<string> {
+export async function uploadSampleInfo(info: SampleInfo): Promise<string> {
     try {
-        // const sampleDocRef = doc(db, 'samples', id);
-        // await setDoc(
-        //     sampleDocRef,
-        //     {
-        //         name: info.name,
-        //         category: info.category,
-        //         description: info.description,
-        //         tags: info.tags,
-        //     },
-        //     { merge: true },
-        // );
-        return 'Sample updated in database';
+        const response = await axios({
+            method: 'POST',
+            url: Endpoints.API_SAMPLE,
+            data: info,
+        });
+        return response.data;
     } catch (error) {
+        throw error;
+    }
+}
+
+export async function editSampleData(info: SampleInfoEdit): Promise<string> {
+    try {
+        const response = await axios({
+            method: 'PUT',
+            url: Endpoints.API_SAMPLE,
+            data: info,
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function uploadSampleFile(form: FormData): Promise<string> {
+    try {
+        const response = await axios({
+            method: 'POST',
+            url: Endpoints.API_SAMPLE_POST_AUDIO,
+            headers: { 'Content-Type': 'multipart/form-data' },
+            data: form,
+        });
+
+        return response.data;
+    } catch (error: any) {
+        throw error;
+    }
+}
+
+export async function uploadSampleArtwork(form: FormData): Promise<string> {
+    try {
+        const response = await axios({
+            method: 'POST',
+            url: Endpoints.API_SAMPLE_POST_ARTWORK,
+            headers: { 'Content-Type': 'multipart/form-data' },
+            data: form,
+        });
+
+        return response.data;
+    } catch (error: any) {
         throw error;
     }
 }
 
 export async function deleteSample(id: string): Promise<string> {
     try {
-        // const sampleDocRef = doc(collection(db, 'samples'), id);
-        // await deleteDoc(sampleDocRef);
-        // //Temporary store in db the id of deleted album
-        // await updateDoc(doc(db, 'misc', 'samples'), {
-        //     deleted_samples: arrayUnion(id),
-        // });
-        return 'Sample deleted from database';
+        const response = await axios.delete(`${Endpoints.API_SAMPLE}/${id}`);
+        return response.data;
     } catch (error) {
         throw error;
     }

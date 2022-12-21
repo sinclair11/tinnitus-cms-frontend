@@ -4,6 +4,7 @@ import { routes } from '@src/router/routes';
 import { useLoading } from '@pages/loading/loading';
 import Sidebar from '@components/sidebar/sidebar';
 import SampleForm from '@components/sampleform/sampleform';
+import { getSampleById } from '@services/sample-services';
 
 const SampleEdit: React.FC = () => {
     const token = window.sessionStorage.getItem('token');
@@ -25,8 +26,7 @@ const SampleEdit: React.FC = () => {
     async function fetchSampleData(): Promise<void> {
         try {
             appendLoading();
-            // const docRef = await getDoc(doc(db, 'samples', id as string));
-            // sampleData.current = docRef.data() as SampleInfo;
+            sampleData.current = await getSampleById(id!);
             //Done fetching data
             setLoaded(true);
             removeLoading();

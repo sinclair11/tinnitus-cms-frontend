@@ -12,6 +12,8 @@ import Toolbar from '@components/toolbar/toolbar';
 import { Container } from 'react-bootstrap';
 import SampleInfoView from '@components/sampleinfo/sampleinfo';
 import { routes } from '@src/router/routes';
+import { getSampleById } from '@services/sample-services';
+import { Endpoints } from '@src/constants';
 
 const SampleView: React.FC = () => {
     const token = window.sessionStorage.getItem('token');
@@ -46,22 +48,19 @@ const SampleView: React.FC = () => {
         try {
             appendLoading();
             //Fetch all sample data
-            // const docRef = doc(collection(db, 'samples'), id);
-            // const docRes = await getDoc(docRef);
-            // const data = docRes.data()!;
-            // data.artwork = createObjectStoragePath(preauthreq, ['samples', id, `preview.jpeg`]);
-            // data.upload_date = data.upload_date.toDate().toDateString();
-            // setSampleData(data);
-            //Loading is done
+            const sample = await getSampleById(id);
+            sample.uploadDate = new Date(Date.parse(sample.uploadDate)).toLocaleString();
+            setSampleData(sample);
             setDataFetched(true);
+            //Loading is done
             removeLoading();
-        } catch (error) {
-            //! Undefined behaviour on error handling
+        } catch (error: any) {
+            alert(error.message);
         }
     }
 
     async function getAudioFile(name: string): Promise<void> {
-        playerRef.current.setSong(createObjectStoragePath(preauthreq, ['samples', id!, `${name}.wav`]));
+        playerRef.current.setSong(`${Endpoints.API_SAMPLE_GET_AUDIO}/${id}/${name}.mp3`);
     }
 
     function displayPage(): JSX.Element {
@@ -91,7 +90,10 @@ const SampleView: React.FC = () => {
                             />
                             <div className="section-album-content">
                                 <div>
-                                    <Artwork type="view" img={sampleData.artwork} />
+                                    <Artwork
+                                        type="view"
+                                        img={`${Endpoints.API_SAMPLE_GET_ARTWORK}/${id}/artwork.jpg`}
+                                    />
                                 </div>
                                 <div className="sample-info-player">
                                     <SampleInfoView data={sampleData} />

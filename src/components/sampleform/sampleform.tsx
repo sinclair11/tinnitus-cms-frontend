@@ -2,14 +2,21 @@ import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } f
 import { SampleFormData } from '@src/types/sample';
 import { useSelector } from 'react-redux';
 import { Category } from '@src/types/general';
-import { createObjectStoragePath, getDurationFormat, parseTags } from '@utils/helpers';
+import { getDurationFormat, parseTags } from '@utils/helpers';
 import { InputGroup, FormControl } from 'react-bootstrap';
 import Dropdown from '@components/dropdown/dropdown';
 import Artwork from '@components/artwork/artwork';
 import { CombinedStates } from '@store/reducers/custom';
-import { deleteSample, editSampleData, uploadSampleInfo } from '@services/sample-services';
+import {
+    deleteSample,
+    editSampleData,
+    uploadSampleArtwork,
+    uploadSampleFile,
+    uploadSampleInfo,
+} from '@services/sample-services';
 import ProgressbarUpload from '@components/progressbar/progressbar-upload';
 import axios from 'axios';
+import { Endpoints } from '@src/constants';
 
 type FormProps = {
     type: string;
@@ -19,7 +26,6 @@ type FormProps = {
 
 const SampleForm = forwardRef((props: FormProps, ref?: any) => {
     const categories = useSelector<CombinedStates>((state) => state.sampleReducer.categories) as Category[];
-    const preauthreq = useSelector<CombinedStates>((state: CombinedStates) => state.ociReducer.config.prereq) as string;
     const [name, setName] = useState('');
     const [nameinvalid, setNameInvalid] = useState('');
     const [description, setDescription] = useState('');
@@ -28,7 +34,7 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
     const [category, setCategory] = useState(categories[0].name);
     const [tags, setTags] = useState('');
     const [length, setLength] = useState('');
-    const file = useRef<string>('');
+    const file = useRef<any>('');
     const [fileInvalid, setFileInvalid] = useState('');
     const artworkRef = useRef<any>(null);
     const progressbarRef = useRef<any>(null);
@@ -76,29 +82,7 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
                 setNameInvalid('This field is mandatory');
                 retVal++;
             } else {
-                //Different behaviour depending on the type
-                // if (props.type === 'edit') {
-                //     //Check if new provided name is different from the old one
-                //     if (name !== props.data!.name) {
-                //         const q = query(collection(db, 'samples'), where('name', '==', name));
-                //         const querySnapshot = await getDocs(q);
-                //         if (querySnapshot.docs.length > 0) {
-                //             setNameInvalid('A sample with this name already exists');
-                //             retVal++;
-                //         } else {
-                //             setNameInvalid('');
-                //         }
-                //     }
-                // } else if (props.type === 'create') {
-                //     const q = query(collection(db, 'samples'), where('name', '==', name));
-                //     const querySnapshot = await getDocs(q);
-                //     if (querySnapshot.docs.length > 0) {
-                //         setNameInvalid('A sample with this name already exists');
-                //         retVal++;
-                //     } else {
-                //         setNameInvalid('');
-                //     }
-                // }
+                setNameInvalid('');
             }
             if (description === '') {
                 setDescInvalid('This field is mandatory');
@@ -134,23 +118,31 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
     }
 
     async function onBrowseClick(): Promise<void> {
-        const dialog = (await invoke('get_audio_files')) as any;
-        if (dialog[0] !== undefined) {
-            const sampleData = dialog[1][0];
-            file.current = sampleData.file;
-            setName(sampleData.name);
-            setLength(getDurationFormat(sampleData.duration));
-            setNameInvalid('');
-            setFileInvalid('');
-        }
+        const input = document.createElement('input')!;
+        input.setAttribute('type', 'file');
+        input.setAttribute('multiple', 'true');
+        input.setAttribute('accept', 'audio/*');
+        input.addEventListener('change', () => {
+            if (input.files && input.files.length > 0) {
+                const audioFile = input.files[0];
+                const audio = new Audio();
+                audio.src = URL.createObjectURL(audioFile);
+                audio.addEventListener('loadedmetadata', () => {
+                    setFileInvalid('');
+                    setLength(getDurationFormat(audio.duration));
+                    file.current = audioFile;
+                });
+            }
+        });
+        input.showPicker();
     }
 
     function onUploadSaveClick(): void {
-        // if (props.type === 'create') {
-        //     onUploadClick();
-        // } else if (props.type === 'edit') {
-        //     onSaveClick();
-        // }
+        if (props.type === 'create') {
+            onUploadClick();
+        } else if (props.type === 'edit') {
+            onSaveClick();
+        }
     }
 
     async function onSaveClick(): Promise<void> {
@@ -168,48 +160,28 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
 
         if (counter === 0) {
             const formData = {
+                id: props.id!,
                 name: name,
                 description: description,
                 tags: parseTags('array', tags),
                 category: category,
             };
             try {
-                await editSampleData(props.id!, formData);
-            } catch (error: any) {}
+                const response = await editSampleData(formData);
+                alert(response);
+            } catch (error: any) {
+                alert(error.message);
+            }
         }
     }
 
-    async function validateInputs(): Promise<boolean> {
+    function validateInputs(): boolean {
         let counter = 0;
-        const artworkValidation = await artworkRef.current.getInputValidation();
+        const artworkValidation = artworkRef.current.getInputValidation();
 
         if (name === '') {
             setNameInvalid('This field is mandatory');
             counter++;
-        } else {
-            //Different behaviour depending on the type
-            if (props.type === 'edit') {
-                //Check if new provided name is different from the old one
-                //     if (name !== props.data!.name) {
-                //         const q = query(collection(db, 'samples'), where('name', '==', name));
-                //         const querySnapshot = await getDocs(q);
-                //         if (querySnapshot.docs.length > 0) {
-                //             setNameInvalid('A sample with this name already exists');
-                //             counter++;
-                //         } else {
-                //             setNameInvalid('');
-                //         }
-                //     }
-                // } else if (props.type === 'create') {
-                //     const q = query(collection(db, 'samples'), where('name', '==', name));
-                //     const querySnapshot = await getDocs(q);
-                //     if (querySnapshot.docs.length > 0) {
-                //         setNameInvalid('A sample with this name already exists');
-                //         counter++;
-                //     } else {
-                //         setNameInvalid('');
-                //     }
-            }
         }
         if (description === '') {
             setDescInvalid('This field is mandatory');
@@ -230,58 +202,76 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
         }
     }
 
+    async function registerSampleInDb(): Promise<string> {
+        const info = {
+            name: name,
+            category: category,
+            description: description,
+            tags: parseTags('array', tags),
+            length: length,
+            likes: 0,
+            views: 0,
+            favorites: 0,
+            reviews: 0,
+            uploadDate: '',
+        };
+
+        return await uploadSampleInfo(info);
+    }
+
+    async function uploadSampleAudio(id: string): Promise<string> {
+        const form = new FormData();
+        const extension = file.current.name.split('.').pop();
+        form.append('id', id);
+        form.append('name', name + '.' + extension);
+        form.append('file', file.current);
+
+        try {
+            const response = await uploadSampleFile(form);
+
+            return response;
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
+    async function uploadSampleArtworkFile(id: string): Promise<string> {
+        const form = new FormData();
+        form.append('id', id);
+        form.append('name', 'artwork.jpg');
+        form.append('file', artworkRef.current.getData());
+
+        try {
+            const response = await uploadSampleArtwork(form);
+
+            return response;
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
     async function onUploadClick(): Promise<void> {
-        // if (await validateInputs()) {
-        //     const docRef = doc(collection(db, 'samples'));
-        //     try {
-        //         const progress = 10;
-        //         //Initialize progress bar and start uploading
-        //         progressbarRef.current.enable(true);
-        //         updateProgress(progress, 'info', 'Uploading sample...');
-        //         //Upload sample audio
-        //         let urlPath = createObjectStoragePath(preauthreq, ['samples', docRef.id, `${name}.wav`]);
-        //         const result = (await invoke('upload_file', {
-        //             name: name,
-        //             path: urlPath,
-        //             file: file.current,
-        //         })) as any;
-        //         if (result[0]) {
-        //             updateProgress((progress += 50), 'success', `Sample ${name} uploaded successfully`);
-        //         } else {
-        //             throw new Error(result[1]);
-        //         }
-        //         //Upload artwork
-        //         const preview = artworkRef.current.getData();
-        //         urlPath = createObjectStoragePath(preauthreq, ['samples', docRef.id, `preview.jpeg`]);
-        //         const previewResult = (await invoke('upload_file', {
-        //             name: name,
-        //             path: urlPath,
-        //             file: preview,
-        //         })) as any;
-        //         if (previewResult[0]) {
-        //             updateProgress((progress += 20), 'success', `Preview for sample ${name} uploaded successfully`);
-        //         } else {
-        //             throw new Error(previewResult[1]);
-        //         }
-        //         //Register sample in db
-        //         const formData = {
-        //             name: name,
-        //             description: description,
-        //             tags: parseTags('array', tags),
-        //             length: length,
-        //             category: category,
-        //         };
-        //         const response = await uploadSampleInfo(docRef.id, formData);
-        //         updateProgress(100, 'success', response);
-        //         progressbarRef.current.logMessage('info', 'All sample data uploaded successfully!');
-        //         clearStates();
-        //     } catch (error: any) {
-        //         deleteSample(docRef.id);
-        //         progressbarRef.current.operationFailed(error.message);
-        //         //Create a new cancel token
-        //         cancelSource.current = axios.CancelToken.source();
-        //     }
-        // }
+        if (validateInputs()) {
+            try {
+                let progress = 5;
+                progressbarRef.current.enable(true);
+                updateProgress(progress, 'info', 'Uploading sample...');
+                const id = await registerSampleInDb();
+                progress += 5;
+                updateProgress(progress, 'success', 'Sample registered in database');
+                let response = await uploadSampleAudio(id);
+                progress += 70;
+                updateProgress(progress, 'success', response);
+                response = await uploadSampleArtworkFile(id);
+                progress += 10;
+                updateProgress(progress, 'success', response);
+                updateProgress(100, 'info', 'All sample data uploaded successfully');
+                clearStates();
+            } catch (error: any) {
+                throw error;
+                clearStates();
+            }
+        }
     }
 
     function onUploadCancelled(): void {
@@ -311,7 +301,7 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
                     ref={artworkRef}
                     type={props.type}
                     message="Please select a preview image for info"
-                    img={createObjectStoragePath(preauthreq, ['samples', props.id as string, `preview.jpeg`])}
+                    img={`${Endpoints.API_SAMPLE_GET_ARTWORK}/${props.id}/artwork.jpg`}
                 />
             </div>
             <div className="inputs-div">

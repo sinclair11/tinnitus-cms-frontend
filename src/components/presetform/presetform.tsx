@@ -32,7 +32,7 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
     const [descInvalid, setDescInvalid] = useState('');
     const [notification, setNotification] = useState('');
     const [category, setCategory] = useState(categories[0].name);
-    const [tags, setTags] = useState([]);
+    const [tags, setTags] = useState('');
     const [length, setLength] = useState('');
     const file = useRef<any>(null);
     const [fileInvalid, setFileInvalid] = useState('');
@@ -69,7 +69,7 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
         clearInternalStates: (): void => {
             setName('');
             setDescription('');
-            setTags([]);
+            setTags('');
             setLength('');
             setNotification('');
             setCategory(categories[0].name);
@@ -82,6 +82,7 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
                 setNameInvalid('This field is mandatory');
                 retVal++;
             } else {
+                setNameInvalid('');
             }
             if (description === '') {
                 setDescInvalid('This field is mandatory');
@@ -206,7 +207,7 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
             name: name,
             category: category,
             description: description,
-            tags: tags,
+            tags: parseTags('array', tags),
             length: length,
             likes: 0,
             views: 0,
@@ -248,6 +249,7 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
             throw error;
         }
     }
+
     async function onUploadClick(): Promise<void> {
         if (validateInputs()) {
             try {
@@ -281,7 +283,7 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
         file.current = null;
         setName('');
         setDescription('');
-        setTags([]);
+        setTags('');
         setLength('');
         setNotification('');
         setCategory(categories[0].name);
@@ -350,7 +352,7 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
                             as="textarea"
                             value={tags}
                             placeholder="#tag1 #tag2 #tag3"
-                            onChange={(event): void => setTags(parseTags('array', event.target.value))}
+                            onChange={(event): void => setTags(event.target.value)}
                         />
                     </InputGroup>
                     {props.type === 'create' ? (
