@@ -181,7 +181,6 @@ export const Table = forwardRef((props: TableProps, ref: any) => {
                 const temp: SongData[] = [];
                 let position = tableData.length > 0 ? tableData.length + 1 : 1;
                 for (const file of files) {
-                    console.log(file);
                     const audio = new Audio();
                     audio.src = URL.createObjectURL(file);
                     audio.addEventListener('loadedmetadata', () => {

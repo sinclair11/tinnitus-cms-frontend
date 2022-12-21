@@ -310,7 +310,6 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
                 <Artwork
                     ref={artworkRef}
                     type={props.type}
-                    className="sample-preview-image"
                     message="Please select a preview image for info"
                     img={createObjectStoragePath(preauthreq, ['samples', props.id as string, `preview.jpeg`])}
                 />

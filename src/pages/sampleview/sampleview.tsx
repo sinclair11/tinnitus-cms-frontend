@@ -91,7 +91,7 @@ const SampleView: React.FC = () => {
                             />
                             <div className="section-album-content">
                                 <div>
-                                    <Artwork type="view" className="sample-preview-image" img={sampleData.artwork} />
+                                    <Artwork type="view" img={sampleData.artwork} />
                                 </div>
                                 <div className="sample-info-player">
                                     <SampleInfoView data={sampleData} />

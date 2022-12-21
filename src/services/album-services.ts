@@ -1,4 +1,4 @@
-import { AlbumFormData, SongData, AlbumInfo, AlbumEditInfo } from '@src/types/album';
+import { AlbumInfo, AlbumEditInfo } from '@src/types/album';
 import axios from 'axios';
 import { Endpoints } from '@src/constants';
 
