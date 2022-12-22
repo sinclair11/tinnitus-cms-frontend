@@ -18,6 +18,14 @@ export async function getAlbum(id: string): Promise<AlbumInfo> {
     }
 }
 
+export async function albumSearchByPattern(pattern: string): Promise<AlbumInfo[]> {
+    try {
+        return (await axios.get(`${Endpoints.API_ALBUM_SEARCH}/${pattern}`)).data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export async function checkAlbumName(name: string): Promise<boolean> {
     try {
         return (await axios.get(`${Endpoints.API_ALBUM_CHECK}/${name}`)).data;
