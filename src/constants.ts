@@ -4,6 +4,7 @@ export const Endpoints = {
     API_LOGIN: `http://${host}/login`,
     API_GET_ALBUMS: `http://${host}/api/admin/albums`,
     API_ALBUM: `http://${host}/api/admin/album`,
+    API_ALBUM_CHECK: `http://${host}/api/admin/album/check`,
     API_ALBUM_POST_AUDIO: `http://${host}/api/admin/album/audio`,
     API_ALBUM_POST_ARTWORK: `http://${host}/api/admin/album/artwork`,
     API_ALBUM_GET_AUDIO: `http://${host}/api/admin/album/assets/audio`,

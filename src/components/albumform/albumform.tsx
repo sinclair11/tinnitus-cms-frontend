@@ -5,6 +5,7 @@ import { getDurationFormat, parseTags } from '@utils/helpers';
 import { AlbumFormData } from '@src/types/album';
 import { useSelector } from 'react-redux';
 import { Category } from '@src/types/general';
+import { checkAlbumName } from '@services/album-services';
 
 type FormProps = {
     type: string;
@@ -64,29 +65,12 @@ const AlbumForm = forwardRef((props: FormProps, ref?: any) => {
                 setNameInvalid('This field is mandatory');
                 retVal++;
             } else {
-                //Different behaviour depending on the type
-                // if (props.type === 'edit') {
-                //     //Check if new provided name is different from the old one
-                //     if (name !== props.data!.name) {
-                //         const q = query(collection(db, 'albums'), where('name', '==', name));
-                //         const querySnapshot = await getDocs(q);
-                //         if (querySnapshot.docs.length > 0) {
-                //             setNameInvalid('An album with this name already exists');
-                //             retVal++;
-                //         } else {
-                //             setNameInvalid('');
-                //         }
-                //     }
-                // } else if (props.type === 'create') {
-                //     const q = query(collection(db, 'albums'), where('name', '==', name));
-                //     const querySnapshot = await getDocs(q);
-                //     if (querySnapshot.docs.length > 0) {
-                //         setNameInvalid('An album with this name already exists');
-                //         retVal++;
-                //     } else {
-                //         setNameInvalid('');
-                //     }
-                // }
+                //Check if name already exists
+                const response = await checkAlbumName(name);
+                if (response) {
+                    setNameInvalid('Name already exists');
+                    retVal++;
+                }
             }
             if (description === '') {
                 setDescInvalid('This field is mandatory');
