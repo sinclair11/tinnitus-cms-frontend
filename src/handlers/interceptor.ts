@@ -9,6 +9,7 @@ export function initInterceptorHandler(): void {
         },
         async (error: any) => {
             if (error.response.status === 401) {
+                window.sessionStorage.clear();
                 error.message = 'Unauthorized access';
                 return (window.location.href = '/login');
             }
