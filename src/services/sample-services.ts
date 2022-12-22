@@ -30,6 +30,14 @@ export async function checkSampleName(name: string): Promise<boolean> {
     }
 }
 
+export async function sampleSearchByPattern(pattern: string): Promise<SampleInfo[]> {
+    try {
+        return (await axios.get(`${Endpoints.API_SAMPLE_SEARCH}/${pattern}`)).data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export async function uploadSampleInfo(info: SampleInfo): Promise<string> {
     try {
         const response = await axios({
