@@ -24,9 +24,7 @@ export async function getPresetById(id: string): Promise<PresetInfo> {
 
 export async function checkPresetName(name: string): Promise<boolean> {
     try {
-        return await (
-            await axios.get(`${Endpoints.API_PRESET_CHECK}/${name}`)
-        ).data;
+        return (await axios.get(`${Endpoints.API_PRESET_CHECK}/${name}`)).data;
     } catch (error) {
         throw error;
     }
@@ -45,13 +43,14 @@ export async function uploadPresetInfo(info: PresetInfo): Promise<string> {
     }
 }
 
-export async function uploadPresetFile(form: FormData): Promise<string> {
+export async function uploadPresetFile(form: FormData, controller: AbortController): Promise<string> {
     try {
         const response = await axios({
             method: 'POST',
             url: Endpoints.API_PRESET_POST_AUDIO,
             headers: { 'Content-Type': 'multipart/form-data' },
             data: form,
+            signal: controller.signal,
         });
 
         return response.data;
@@ -60,13 +59,14 @@ export async function uploadPresetFile(form: FormData): Promise<string> {
     }
 }
 
-export async function uploadPresetArtwork(form: FormData): Promise<string> {
+export async function uploadPresetArtwork(form: FormData, controller: AbortController): Promise<string> {
     try {
         const response = await axios({
             method: 'POST',
             url: Endpoints.API_PRESET_POST_ARTWORK,
             headers: { 'Content-Type': 'multipart/form-data' },
             data: form,
+            signal: controller.signal,
         });
 
         return response.data;
