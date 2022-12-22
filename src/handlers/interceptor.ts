@@ -1,14 +1,14 @@
 import axios from 'axios';
 
 export function initInterceptorHandler(): void {
-    axios.defaults.headers.common['Content-Type'] = 'application/json';
+    // axios.defaults.headers!.common['Content-Type'] = 'application/json';
 
     axios.interceptors.response.use(
         (response) => {
             return response;
         },
         async (error: any) => {
-            if (error.response.status === 401) {
+            if (error.response != null && error.response.status === 401) {
                 window.sessionStorage.clear();
                 error.message = 'Unauthorized access';
                 return (window.location.href = '/login');
@@ -22,7 +22,7 @@ export function initInterceptorHandler(): void {
         //Token available only after login
         if (tokenJSON != null) {
             const token = JSON.parse(tokenJSON);
-            config.headers.Authorization = `Bearer ${token.value}`;
+            config.headers!.Authorization = `Bearer ${token.value}`;
         }
         return config;
     });
