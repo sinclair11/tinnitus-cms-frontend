@@ -27,6 +27,7 @@
         "react-tooltip": "^4.2.21",
         "redux": "^4.1.1",
         "redux-persist": "^6.0.0",
+        "serve": "^14.1.2",
         "uuid": "^8.3.2",
         "vite-plugin-fonts": "^0.4.0"
     },
