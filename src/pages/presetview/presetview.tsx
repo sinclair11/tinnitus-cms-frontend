@@ -25,20 +25,21 @@ const PresetView: React.FC = () => {
 
     useEffect(() => {
         if (token != '') {
-            if (id !== '0') {
-                //Load data for selected album
-                fetchPresetData(id as string);
-            }
         } else {
             navigate(routes.LOGIN);
         }
     }, [token]);
 
     useEffect(() => {
+        //Load data for selected album
+        fetchPresetData(id as string);
+    }, [id]);
+
+    useEffect(() => {
         if (playerRef.current && dataFetched) {
             getAudioFile(presetData.name);
         }
-    });
+    }, [dataFetched]);
 
     async function fetchPresetData(id: string): Promise<void> {
         try {

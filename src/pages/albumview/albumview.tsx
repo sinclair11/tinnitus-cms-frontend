@@ -30,14 +30,14 @@ const AlbumView: React.FC = () => {
 
     useEffect(() => {
         if (token != null) {
-            if (id !== '0') {
-                //Load data for selected album
-                fetchAlbumData(id as string);
-            }
         } else {
             navigate(routes.LOGIN);
         }
     }, [token]);
+
+    useEffect(() => {
+        fetchAlbumData(id as string);
+    }, [id]);
 
     useEffect(() => {
         if (dataFetched) {
@@ -78,14 +78,14 @@ const AlbumView: React.FC = () => {
                     <div className="page-content" ref={container}>
                         <h2 className="page-title">Album information</h2>
                         <div className="SearchBarDiv">
-                            <SearchBar type="album" pathToSearch="albums" navigate="/album/view/" ref={searchbarRef} />
+                            <SearchBar type="album" pathToSearch="albums" navigate="/albums/view/" ref={searchbarRef} />
                         </div>
                         <Container>
                             <Toolbar
                                 itemId={id as string}
                                 upload={routes.ALBUM_CREATE}
-                                edit={`/album/edit/${id}`}
-                                reviews={`/album/reviews/${id}`}
+                                edit={`/albums/edit/${id}`}
+                                reviews={`/albums/reviews/${id}`}
                                 categories={routes.ALBUM_CATEGORIES}
                                 return={routes.ALBUM_LIST}
                                 delete="album"

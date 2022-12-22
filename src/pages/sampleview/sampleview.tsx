@@ -1,9 +1,6 @@
 import React, { createRef, useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { useLoading } from '@pages/loading/loading';
-import { CombinedStates } from '@store/reducers/custom';
-import { createObjectStoragePath } from '@utils/helpers';
 import Artwork from '@components/artwork/artwork';
 import Player from '@components/player/player';
 import SearchBar from '@components/searchbar/searchbar';
@@ -25,24 +22,24 @@ const SampleView: React.FC = () => {
     const searchbarRef = createRef<any>();
     const playerRef = useRef<any>(null);
     const container = useRef(null);
-    const preauthreq = useSelector<CombinedStates>((state) => state.ociReducer.config.prereq) as string;
 
     useEffect(() => {
-        if (token != '') {
-            if (id !== '0') {
-                //Load data for selected album
-                fetchSampleData(id as string);
-            }
+        if (token != null) {
         } else {
             navigate(routes.LOGIN);
         }
     }, [token]);
 
     useEffect(() => {
+        //Load data for selected album
+        fetchSampleData(id!);
+    }, [id]);
+
+    useEffect(() => {
         if (playerRef.current && dataFetched) {
             getAudioFile(sampleData.name);
         }
-    });
+    }, [dataFetched]);
 
     async function fetchSampleData(id: string): Promise<void> {
         try {

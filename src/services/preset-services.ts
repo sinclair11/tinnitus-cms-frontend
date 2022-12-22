@@ -30,6 +30,14 @@ export async function checkPresetName(name: string): Promise<boolean> {
     }
 }
 
+export async function presetSearchByPattern(pattern: string): Promise<PresetInfo[]> {
+    try {
+        return (await axios.get(`${Endpoints.API_PRESET_SEARCH}/${pattern}`)).data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export async function uploadPresetInfo(info: PresetInfo): Promise<string> {
     try {
         const response = await axios({

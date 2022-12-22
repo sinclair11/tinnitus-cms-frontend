@@ -5,9 +5,10 @@ import { dialogStyles } from '@src/styles/styles';
 import Modal from 'react-modal';
 import { MessageBox } from '@src/components/messagebox/messagebox';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { CombinedStates } from '@store/reducers/custom';
-import { createObjectStoragePath } from '@src/utils/helpers';
+import { albumSearchByPattern } from '@services/album-services';
+import { Endpoints } from '@src/constants';
+import { sampleSearchByPattern } from '@services/sample-services';
+import { presetSearchByPattern } from '@services/preset-services';
 
 type SearchProps = {
     type: string;
@@ -21,8 +22,7 @@ const SearchBar = forwardRef((props: SearchProps, ref?: any) => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [message, setMessage] = useState('');
     const [selected, setSelected] = useState({ name: '' });
-    const [searchedAlbums, setSearchedAlbums] = useState<any[]>([]);
-    const preauthreq = useSelector<CombinedStates>((state) => state.ociReducer.config.prereq) as string;
+    const [searchedResources, setSearchedResources] = useState<any[]>([]);
 
     useEffect(() => {
         if (selected !== null && selected.name != searchVal) {
@@ -41,43 +41,40 @@ const SearchBar = forwardRef((props: SearchProps, ref?: any) => {
     async function getResourceData(): Promise<void> {
         if (searchVal != '') {
             try {
-                //Convert first letter to uppercase
-                const temp = searchVal[0].toUpperCase() + searchVal.slice(1);
-                const albums = [];
-                //Search for album starting with the given string
-                // const albumsRef = collection(db, props.pathToSearch);
-                // const q = query(albumsRef, where('name', '>=', temp), limit(7));
-                // const q1 = query(q, where('name', '<=', temp + '\uf8ff'), limit(7));
-                // const querySnapshot = await getDocs(q1);
-                // const docs = querySnapshot.docs;
-                // if (docs.length > 0) {
-                //     //Take all data now to avoid doing an additional request
-                //     for (const doc of docs) {
-                //         const data = doc.data();
-                //         const arworkUrl = createObjectStoragePath(preauthreq, ['albums', doc.id, `artwork.jpeg`]);
-                //         albums.push({
-                //             id: doc.id,
-                //             name: data.name,
-                //             upload_date: data.upload_date.toDate().toDateString(),
-                //             category: data.category,
-                //             description: data.description,
-                //             tags: data.tags,
-                //             length: data.length,
-                //             artwork: arworkUrl,
-                //             songs: data.songs,
-                //             total_songs: data.total_songs,
-                //             likes: data.likes,
-                //             favorites: data.favorites,
-                //             reviews: data.reviews,
-                //         });
-                //     }
-                //     setSearchedAlbums(albums);
-                //     //Show search results
-                //     document.getElementById('searchbar-results')!.style.display = 'flex';
-                // } else {
-                //     //No results found
-                //     document.getElementById('searchbar-results')!.style.display = 'none';
-                // }
+                let resources: string | React.SetStateAction<any[]> = [];
+                let artworkPath = '';
+
+                switch (props.type) {
+                    case 'album': {
+                        resources = await albumSearchByPattern(searchVal);
+                        artworkPath = Endpoints.API_ALBUM_GET_ARTWORK;
+                        break;
+                    }
+                    case 'preset': {
+                        resources = await presetSearchByPattern(searchVal);
+                        artworkPath = Endpoints.API_PRESET_GET_ARTWORK;
+                        break;
+                    }
+                    case 'sample': {
+                        resources = await sampleSearchByPattern(searchVal);
+                        artworkPath = Endpoints.API_SAMPLE_GET_ARTWORK;
+                        break;
+                    }
+                    default:
+                        break;
+                }
+
+                for (const resource of resources) {
+                    resource.artwork = `${artworkPath}/${resource.id}/artwork.jpg`;
+                }
+                setSearchedResources(resources);
+                if (resources.length > 0) {
+                    //Show search results
+                    document.getElementById('searchbar-results')!.style.display = 'flex';
+                } else {
+                    //No results found
+                    document.getElementById('searchbar-results')!.style.display = 'none';
+                }
             } catch (error: any) {
                 //Notify user about error
                 setMessage(error.message);
@@ -86,27 +83,26 @@ const SearchBar = forwardRef((props: SearchProps, ref?: any) => {
         } else {
             //No input given
             document.getElementById('searchbar-results')!.style.display = 'none';
-            setSearchedAlbums([]);
+            setSearchedResources([]);
         }
     }
 
-    function onItemClick(name: string): void {
-        setSearchVal(name);
-        if (searchedAlbums.length > 0) {
+    function onItemClick(id: string): void {
+        setSearchVal(id);
+        if (searchedResources.length > 0) {
             //Get selected album from search results
-            const selectedItem = searchedAlbums.find((item) => item.name === name);
-            setSelected(selectedItem);
             document.getElementById('searchbar-results')!.style.display = 'none';
             setSearchVal('');
-            navigate(`${props.navigate}${selectedItem.id}`);
+            navigate(`${props.navigate}${id}`);
+            // navigate(0);
         }
     }
 
     async function onSearchBtnClick(): Promise<void> {
         await getResourceData();
-        if (searchedAlbums.length > 0) {
+        if (searchedResources.length > 0) {
             //Get selected album from given input
-            const selectedItem = searchedAlbums.find((item) => item.name === searchVal);
+            const selectedItem = searchedResources.find((item) => item.name === searchVal);
             document.getElementById('searchbar-results')!.style.display = 'none';
             if (selectedItem !== undefined) {
                 setSelected(selectedItem);
@@ -118,12 +114,7 @@ const SearchBar = forwardRef((props: SearchProps, ref?: any) => {
 
     return (
         <InputGroup className="SearchGroup">
-            <div
-                className="searchbar-div"
-                // onBlur={(): void => {
-                //     document.getElementById('searchbar-results').style.display = 'none';
-                // }}
-            >
+            <div className="searchbar-div">
                 <FormControl
                     id="searchbar-items"
                     placeholder={`Search ${props.type}...`}
@@ -135,20 +126,22 @@ const SearchBar = forwardRef((props: SearchProps, ref?: any) => {
                     className="SearchBar"
                     value={searchVal}
                     onChange={(event: any): void => {
-                        setSearchVal(event.target.value.charAt(0).toUpperCase() + event.target.value.slice(1));
+                        setSearchVal(event.target.value);
                     }}
                 />
                 <div id="searchbar-results">
-                    {searchedAlbums.map((album: any, key: number) => (
+                    {searchedResources.map((resource: any, key: number) => (
                         <div
                             className="searchbar-result-item"
                             key={key}
-                            onClick={(): void => onItemClick(album.name)}
-                            id={album.name}
+                            onClick={(): void => onItemClick(resource.id)}
+                            id={resource.id}
                         >
-                            {props.type === 'album' && <img src={album.artwork} />}
-                            <p className="item-name">{album.name}</p>
-                            <p className="item-upload-date">{album.upload_date}</p>
+                            <img src={resource.artwork} />
+                            <p className="item-name">{resource.name}</p>
+                            <p className="item-upload-date">
+                                {new Date(Date.parse(resource.uploadDate)).toLocaleString()}
+                            </p>
                         </div>
                     ))}
                 </div>

@@ -62,7 +62,7 @@ const AlbumList: React.FC = () => {
                 <div className="page-content">
                     <h2 className="page-title">Albums</h2>
                     <div className="SearchBarDiv">
-                        <SearchBar type="album" pathToSearch="albums" navigate="/album/view/" ref={searchbarRef} />
+                        <SearchBar type="album" pathToSearch="albums" navigate="/albums/view/" ref={searchbarRef} />
                     </div>
                     <Container>
                         <div className="section-album-content">
@@ -92,7 +92,7 @@ const AlbumsTable: React.FC<AlbumTableProps> = (props: AlbumTableProps) => {
     const navigate = useNavigate();
 
     function onAlbumClick(id: string): void {
-        navigate(`/album/view/${id}`);
+        navigate(`/albums/view/${id}`);
     }
 
     return (
