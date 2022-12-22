@@ -22,6 +22,16 @@ export async function getAlbum(id: string): Promise<AlbumInfo> {
     }
 }
 
+export async function checkAlbumName(name: string): Promise<boolean> {
+    try {
+        return await (
+            await axios.get(`${Endpoints.API_ALBUM_CHECK}/${name}`)
+        ).data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export async function uploadAlbumInfo(album: AlbumInfo): Promise<string> {
     try {
         const response = await axios({

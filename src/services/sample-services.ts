@@ -22,6 +22,16 @@ export async function getSampleById(id: string): Promise<SampleInfo> {
     }
 }
 
+export async function checkSampleName(name: string): Promise<boolean> {
+    try {
+        return await (
+            await axios.get(`${Endpoints.API_SAMPLE_CHECK}/${name}`)
+        ).data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export async function uploadSampleInfo(info: SampleInfo): Promise<string> {
     try {
         const response = await axios({

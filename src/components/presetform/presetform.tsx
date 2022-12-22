@@ -8,6 +8,7 @@ import Dropdown from '@components/dropdown/dropdown';
 import Artwork from '@components/artwork/artwork';
 import { CombinedStates } from '@store/reducers/custom';
 import {
+    checkPresetName,
     deletePreset,
     editPresetData,
     uploadPresetArtwork,
@@ -175,13 +176,19 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
         }
     }
 
-    function validateInputs(): boolean {
+    async function validateInputs(): Promise<boolean> {
         let counter = 0;
         const artworkValidation = artworkRef.current.getInputValidation();
 
         if (name === '') {
             setNameInvalid('This field is mandatory');
             counter++;
+        } else {
+            const response = await checkPresetName(name);
+            if (response) {
+                setNameInvalid('Name already exists');
+                counter++;
+            }
         }
         if (description === '') {
             setDescInvalid('This field is mandatory');
@@ -251,7 +258,7 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
     }
 
     async function onUploadClick(): Promise<void> {
-        if (validateInputs()) {
+        if (await validateInputs()) {
             try {
                 let progress = 5;
                 progressbarRef.current.enable(true);
