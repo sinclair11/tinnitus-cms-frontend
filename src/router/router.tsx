@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { routes } from './routes';
 import AlbumView from '@pages/albumview/albumview';
 import Login from '@pages/login/login';
@@ -23,7 +23,7 @@ import Dashboard from '@pages/dashboard/dashboard';
 
 const Router: React.FC = () => {
     return (
-        <HashRouter>
+        <BrowserRouter>
             <Routes>
                 <Route path={routes.HOME} element={<Welcome />} />
                 <Route path={routes.LOGIN} element={<Login />} />
@@ -46,7 +46,7 @@ const Router: React.FC = () => {
                 <Route path={routes.DASHBOARD} element={<Dashboard />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
-        </HashRouter>
+        </BrowserRouter>
     );
 };
 

@@ -3,7 +3,7 @@ import axios from 'axios';
 export function refreshToken(token: string, expiration: number): void {
     window.setTimeout(async () => {
         try {
-            const response = await axios.get('http://localhost/api/auth/refresh', {
+            const response = await axios.get('http://localhost:8080/api/auth/refresh', {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
