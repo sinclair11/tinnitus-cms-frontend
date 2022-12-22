@@ -25,6 +25,7 @@ const ProgressbarUpload = forwardRef((props: ProgressType, ref: any) => {
     const [progress, setProgress] = useState(0);
     const [variant, setVariant] = useState('success');
     const [log, setLog] = useState(Array<{ type: string; value: any }>());
+    const lastEntry = useRef<any>(null);
 
     useEffect(() => {
         if (btnContinue.current != null && btnAbort.current != null) {
@@ -41,6 +42,10 @@ const ProgressbarUpload = forwardRef((props: ProgressType, ref: any) => {
             }
         }
     }, [progress]);
+
+    useEffect(() => {
+        if (lastEntry.current != null) lastEntry.current!.scrollIntoView({ behavior: 'smooth' });
+    }, [log]);
 
     useImperativeHandle(ref, () => ({
         enable: (value: boolean): void => {
@@ -133,6 +138,7 @@ const ProgressbarUpload = forwardRef((props: ProgressType, ref: any) => {
                 <ul className="progress-log-info">
                     {log.map((item, index) => (
                         <li
+                            ref={lastEntry}
                             key={index}
                             style={{
                                 color: getColor(item.type),

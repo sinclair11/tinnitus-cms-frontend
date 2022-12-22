@@ -4,9 +4,7 @@ import { Endpoints } from '@src/constants';
 
 export async function getAlbums(): Promise<AlbumInfo[]> {
     try {
-        return await (
-            await axios.get(Endpoints.API_GET_ALBUMS, {})
-        ).data;
+        return (await axios.get(Endpoints.API_GET_ALBUMS, {})).data;
     } catch (error) {
         throw error;
     }
@@ -14,9 +12,7 @@ export async function getAlbums(): Promise<AlbumInfo[]> {
 
 export async function getAlbum(id: string): Promise<AlbumInfo> {
     try {
-        return await (
-            await axios.get(`${Endpoints.API_ALBUM}/${id}`, {})
-        ).data;
+        return (await axios.get(`${Endpoints.API_ALBUM}/${id}`, {})).data;
     } catch (error) {
         throw error;
     }
@@ -24,9 +20,7 @@ export async function getAlbum(id: string): Promise<AlbumInfo> {
 
 export async function checkAlbumName(name: string): Promise<boolean> {
     try {
-        return await (
-            await axios.get(`${Endpoints.API_ALBUM_CHECK}/${name}`)
-        ).data;
+        return (await axios.get(`${Endpoints.API_ALBUM_CHECK}/${name}`)).data;
     } catch (error) {
         throw error;
     }
@@ -46,13 +40,14 @@ export async function uploadAlbumInfo(album: AlbumInfo): Promise<string> {
     }
 }
 
-export async function uploadAlbumFile(form: FormData): Promise<string> {
+export async function uploadAlbumFile(form: FormData, controller: AbortController): Promise<string> {
     try {
         const response = await axios({
             method: 'POST',
             url: Endpoints.API_ALBUM_POST_AUDIO,
             data: form,
             headers: { 'Content-Type': 'multipart/form-data' },
+            signal: controller.signal,
         });
 
         return response.data;
@@ -61,13 +56,14 @@ export async function uploadAlbumFile(form: FormData): Promise<string> {
     }
 }
 
-export async function uploadAlbumArtowrk(form: FormData): Promise<string> {
+export async function uploadAlbumArtowrk(form: FormData, controller: AbortController): Promise<string> {
     try {
         const response = await axios({
             method: 'POST',
             url: Endpoints.API_ALBUM_POST_ARTWORK,
             data: form,
             headers: { 'Content-Type': 'multipart/form-data' },
+            signal: controller.signal,
         });
 
         return response.data;

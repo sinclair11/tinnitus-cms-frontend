@@ -24,9 +24,7 @@ export async function getSampleById(id: string): Promise<SampleInfo> {
 
 export async function checkSampleName(name: string): Promise<boolean> {
     try {
-        return await (
-            await axios.get(`${Endpoints.API_SAMPLE_CHECK}/${name}`)
-        ).data;
+        return (await axios.get(`${Endpoints.API_SAMPLE_CHECK}/${name}`)).data;
     } catch (error) {
         throw error;
     }
@@ -58,13 +56,14 @@ export async function editSampleData(info: SampleInfoEdit): Promise<string> {
     }
 }
 
-export async function uploadSampleFile(form: FormData): Promise<string> {
+export async function uploadSampleFile(form: FormData, controller: AbortController): Promise<string> {
     try {
         const response = await axios({
             method: 'POST',
             url: Endpoints.API_SAMPLE_POST_AUDIO,
             headers: { 'Content-Type': 'multipart/form-data' },
             data: form,
+            signal: controller.signal,
         });
 
         return response.data;
@@ -73,13 +72,14 @@ export async function uploadSampleFile(form: FormData): Promise<string> {
     }
 }
 
-export async function uploadSampleArtwork(form: FormData): Promise<string> {
+export async function uploadSampleArtwork(form: FormData, controller: AbortController): Promise<string> {
     try {
         const response = await axios({
             method: 'POST',
             url: Endpoints.API_SAMPLE_POST_ARTWORK,
             headers: { 'Content-Type': 'multipart/form-data' },
             data: form,
+            signal: controller.signal,
         });
 
         return response.data;

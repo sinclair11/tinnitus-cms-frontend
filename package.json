@@ -15,7 +15,7 @@
         "fix": "prettier --write 'src/**/*.{js,ts,tsx}' && eslint 'src/**/*.{js,ts,tsx}' --fix"
     },
     "dependencies": {
-        "axios": "^0.21.4",
+        "axios": "^0.22.0",
         "react": "^18.0.0",
         "react-bootstrap": "^2.3.1",
         "react-color": "^2.19.3",

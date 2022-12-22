@@ -39,7 +39,8 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
     const [fileInvalid, setFileInvalid] = useState('');
     const artworkRef = useRef<any>(null);
     const progressbarRef = useRef<any>(null);
-    const cancelSource = useRef(axios.CancelToken.source());
+    const controller = useRef(new AbortController());
+    const cancelled = useRef(false);
 
     useEffect(() => {
         if (props.data !== undefined && props.type === 'edit') {
@@ -234,7 +235,7 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
         form.append('file', file.current);
 
         try {
-            const response = await uploadPresetFile(form);
+            const response = await uploadPresetFile(form, controller.current);
 
             return response;
         } catch (error: any) {
@@ -249,7 +250,7 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
         form.append('file', artworkRef.current.getData());
 
         try {
-            const response = await uploadPresetArtwork(form);
+            const response = await uploadPresetArtwork(form, controller.current);
 
             return response;
         } catch (error: any) {
@@ -259,11 +260,12 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
 
     async function onUploadClick(): Promise<void> {
         if (await validateInputs()) {
+            let id = '';
             try {
                 let progress = 5;
                 progressbarRef.current.enable(true);
                 updateProgress(progress, 'info', 'Uploading preset...');
-                const id = await registerPresetInDb();
+                id = await registerPresetInDb();
                 progress += 5;
                 updateProgress(progress, 'success', 'Preset registered in database');
                 let response = await uploadPresetAudio(id);
@@ -275,14 +277,30 @@ const PresetForm = forwardRef((props: FormProps, ref?: any) => {
                 updateProgress(100, 'info', 'All preset data uploaded successfully');
                 clearStates();
             } catch (error: any) {
-                throw error;
-                clearStates();
+                if (cancelled.current) {
+                    progressbarRef.current.operationFailed('User cancelled operation');
+                } else {
+                    progressbarRef.current.operationFailed(error.message);
+                }
+                //Reset cancel state
+                cancelled.current = false;
+                controller.current = new AbortController();
+                //Log operation status
+                progressbarRef.current.logMessage('info', 'Preparing preset for deletion...');
+                try {
+                    await deletePreset(id);
+                    progressbarRef.current.setProgress(100);
+                    progressbarRef.current.logMessage('info', 'Preset deleted successfully');
+                } catch (error: any) {
+                    alert('Could not delete requested resource. Please contact development team !');
+                }
             }
         }
     }
 
     function onUploadCancelled(): void {
-        cancelSource.current.cancel('User cancelled upload');
+        controller.current.abort();
+        cancelled.current = true;
     }
 
     function clearStates(): void {
