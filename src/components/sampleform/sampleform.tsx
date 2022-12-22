@@ -16,7 +16,6 @@ import {
     uploadSampleInfo,
 } from '@services/sample-services';
 import ProgressbarUpload from '@components/progressbar/progressbar-upload';
-import axios from 'axios';
 import { Endpoints } from '@src/constants';
 
 type FormProps = {
@@ -39,7 +38,8 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
     const [fileInvalid, setFileInvalid] = useState('');
     const artworkRef = useRef<any>(null);
     const progressbarRef = useRef<any>(null);
-    const cancelSource = useRef(axios.CancelToken.source());
+    const controller = useRef(new AbortController());
+    const cancelled = useRef(false);
 
     useEffect(() => {
         if (props.data !== undefined && props.type === 'edit') {
@@ -233,8 +233,9 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
         form.append('name', name + '.' + extension);
         form.append('file', file.current);
 
+        if (cancelled.current) throw new Error('User cancelled upload');
         try {
-            const response = await uploadSampleFile(form);
+            const response = await uploadSampleFile(form, controller.current);
 
             return response;
         } catch (error: any) {
@@ -248,8 +249,9 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
         form.append('name', 'artwork.jpg');
         form.append('file', artworkRef.current.getData());
 
+        if (cancelled.current) throw new Error('User cancelled upload');
         try {
-            const response = await uploadSampleArtwork(form);
+            const response = await uploadSampleArtwork(form, controller.current);
 
             return response;
         } catch (error: any) {
@@ -259,11 +261,12 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
 
     async function onUploadClick(): Promise<void> {
         if (await validateInputs()) {
+            let id = '';
             try {
                 let progress = 5;
                 progressbarRef.current.enable(true);
                 updateProgress(progress, 'info', 'Uploading sample...');
-                const id = await registerSampleInDb();
+                id = await registerSampleInDb();
                 progress += 5;
                 updateProgress(progress, 'success', 'Sample registered in database');
                 let response = await uploadSampleAudio(id);
@@ -275,14 +278,30 @@ const SampleForm = forwardRef((props: FormProps, ref?: any) => {
                 updateProgress(100, 'info', 'All sample data uploaded successfully');
                 clearStates();
             } catch (error: any) {
-                throw error;
-                clearStates();
+                if (cancelled.current) {
+                    progressbarRef.current.operationFailed('User cancelled operation');
+                } else {
+                    progressbarRef.current.operationFailed(error.message);
+                }
+                //Reset cancel state
+                cancelled.current = false;
+                controller.current = new AbortController();
+                //Log operation status
+                progressbarRef.current.logMessage('info', 'Preparing preset for deletion...');
+                try {
+                    await deleteSample(id);
+                    progressbarRef.current.setProgress(100);
+                    progressbarRef.current.logMessage('info', 'Preset deleted successfully');
+                } catch (error: any) {
+                    alert('Could not delete requested resource. Please contact development team !');
+                }
             }
         }
     }
 
     function onUploadCancelled(): void {
-        cancelSource.current.cancel('User cancelled upload');
+        controller.current.abort();
+        cancelled.current = true;
     }
 
     function clearStates(): void {
