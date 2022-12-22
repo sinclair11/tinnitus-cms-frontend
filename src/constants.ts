@@ -11,6 +11,7 @@ export const Endpoints = {
     API_ALBUM_GET_ARTWORK: `http://${host}/api/admin/album/assets/artwork`,
     API_GET_PRESETS: `http://${host}/api/admin/presets`,
     API_PRESET: `http://${host}/api/admin/preset`,
+    API_PRESET_CHECK: `http://${host}/api/admin/preset/check`,
     API_PRESET_POST_AUDIO: `http://${host}/api/admin/preset/audio`,
     API_PRESET_POST_ARTWORK: `http://${host}/api/admin/preset/artwork`,
     API_PRESET_GET_AUDIO: `http://${host}/api/admin/preset/assets/audio`,

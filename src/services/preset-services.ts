@@ -22,6 +22,16 @@ export async function getPresetById(id: string): Promise<PresetInfo> {
     }
 }
 
+export async function checkPresetName(name: string): Promise<boolean> {
+    try {
+        return await (
+            await axios.get(`${Endpoints.API_PRESET_CHECK}/${name}`)
+        ).data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export async function uploadPresetInfo(info: PresetInfo): Promise<string> {
     try {
         const response = await axios({
