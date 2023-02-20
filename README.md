@@ -1,4 +1,4 @@
-<img src="https://stitch-statichosting-prod.s3.amazonaws.com/63bc167d8303cda11f64b959/misc/tinnitus-banner.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAZ5A3K6VY7LDWGOX4%2F20230220%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230220T161341Z&X-Amz-Expires=60&X-Amz-SignedHeaders=host&X-Amz-Signature=f8f06806c2f5bd06278822778f36b1a6fefe513567485b1348d2c88dcd1df3d2" alt="preview">
+<img src="https://stitch-statichosting-prod.s3.amazonaws.com/63bc167d8303cda11f64b959/misc/tinnitus-banner.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAZ5A3K6VY7LDWGOX4%2F20230220%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230220T161814Z&X-Amz-Expires=60&X-Amz-SignedHeaders=host&X-Amz-Signature=de00a704f28c126634ef9dc38f7c030a0853f63baff3f143585d31deade2e05c" alt="preview">
 
 ## Tinnitus CMS front-end
 
