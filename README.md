@@ -1,4 +1,4 @@
-## Tinnitus CMS
+<img src="https://www.stefantincu.com/misc/tinnitus-banner.png" alt="preview">
 
 Content management application built in React used by Tinnitus Sounds admin to upload, view, edit and delete albums, presets and samples. It features a dashboard to display information about resources, revenue and general overview. Each type of asset has a section which displays resources and search a specific resource by name. For each individual resource there is a page to view its own information and also a page to edit certain fields. To upload an asset the admin must complete a form which requires general information like name, description, category etc., must upload a cover image and an audio file (for samples and presets) and a list of audio files for an album asset. Also each type of asset has a page to manage categories. There is also a page for statistics and reports which display information about client application and resources usage.
 
